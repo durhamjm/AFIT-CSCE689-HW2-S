@@ -6,17 +6,18 @@
 #include <iostream>
 #include "TCPConn.h"
 #include "strfuncts.h"
+#include "PasswdMgr.h"
 
 // The filename/path of the password file
 const char pwdfilename[] = "passwd";
+PasswdMgr pmgr("passwd");
 
-TCPConn::TCPConn(){ // LogMgr &server_log):_server_log(server_log) {
-
+TCPConn::TCPConn(){ 
+   // LogMgr &server_log):_server_log(server_log) {
 }
 
 
 TCPConn::~TCPConn() {
-
 }
 
 /**********************************************************************************************
@@ -61,8 +62,6 @@ void TCPConn::startAuthentication() {
 
    // Skipping this for now
    _status = s_username;
-
-   _connfd.writeFD("Username: "); 
 }
 
 /**********************************************************************************************
@@ -120,6 +119,18 @@ void TCPConn::handleConnection() {
 
 void TCPConn::getUsername() {
    // Insert your mind-blowing code here
+   _connfd.writeFD("Username: ");
+   if (!getUserInput(_username)) {
+      std::cout << "Error getting username.";
+   }
+   char user[_username.size() + 1];
+   strcpy(user, _username.c_str());
+   if (!pmgr.checkUser(user)) {
+      std::cout << "Unknown user.";
+   } else {
+      getPasswd();
+   }
+
 }
 
 /**********************************************************************************************
@@ -131,6 +142,7 @@ void TCPConn::getUsername() {
  **********************************************************************************************/
 
 void TCPConn::getPasswd() {
+   _connfd.writeFD("Password: ");
    // Insert your astounding code here
 }
 
@@ -201,23 +213,19 @@ void TCPConn::getMenuChoice() {
    // Don't be lazy and use my outputs--make your own!
    std::string msg;
    if (cmd.compare("hello") == 0) {
-      _connfd.writeFD("Hello back!\n");
+      _connfd.writeFD("Hello and welcome to the client authentication server!\n");
    } else if (cmd.compare("menu") == 0) {
       sendMenu();
    } else if (cmd.compare("exit") == 0) {
-      _connfd.writeFD("Disconnecting...goodbye!\n");
+      _connfd.writeFD("So long and thanks for all the fish!\n");
       disconnect();
    } else if (cmd.compare("passwd") == 0) {
-      _connfd.writeFD("New Password: ");
+      _connfd.writeFD("Enter new Password: ");
       _status = s_changepwd;
    } else if (cmd.compare("1") == 0) {
-      msg += "You want a prediction about the weather? You're asking the wrong Phil.\n";
-      msg += "I'm going to give you a prediction about this winter. It's going to be\n";
-      msg += "cold, it's going to be dark and it's going to last you for the rest of\n";
-      msg += "your lives!\n";
-      _connfd.writeFD(msg);
+      _connfd.writeFD("It can be on time, on budget, or functional, but it can't be all three.\n");
    } else if (cmd.compare("2") == 0) {
-      _connfd.writeFD("42\n");
+      _connfd.writeFD("Why did Adele cross the road? To say hello from the other side.");
    } else if (cmd.compare("3") == 0) {
       _connfd.writeFD("That seems like a terrible idea.\n");
    } else if (cmd.compare("4") == 0) {
@@ -243,14 +251,14 @@ void TCPConn::sendMenu() {
    std::string menustr;
 
    // Make this your own!
-   menustr += "Available choices: \n";
-   menustr += "  1). Provide weather report.\n";
-   menustr += "  2). Learn the secret of the universe.\n";
+   menustr += "Acceptable commands: \n";
+   menustr += "  1). Know your limits\n";
+   menustr += "  2). Hear a joke\n";
    menustr += "  3). Play global thermonuclear war\n";
    menustr += "  4). Do nothing.\n";
    menustr += "  5). Sing. Sing a song. Make it simple, to last the whole day long.\n\n";
-   menustr += "Other commands: \n";
-   menustr += "  Hello - self-explanatory\n";
+   menustr += "Misc. commands: \n";
+   menustr += "  Hello - welcome message\n";
    menustr += "  Passwd - change your password\n";
    menustr += "  Menu - display this menu\n";
    menustr += "  Exit - disconnect.\n\n";

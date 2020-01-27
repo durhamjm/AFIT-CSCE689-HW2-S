@@ -10,7 +10,6 @@
 #include <sys/select.h>
 #include <stdio.h>
 #include <stdexcept>
-
 #include "TCPClient.h"
 
 
@@ -18,7 +17,6 @@
  * TCPClient (constructor) - Creates a Stdin file descriptor to simplify handling of user input. 
  *
  **********************************************************************************************/
-
 TCPClient::TCPClient() {
 }
 
@@ -26,9 +24,7 @@ TCPClient::TCPClient() {
  * TCPClient (destructor) - No cleanup right now
  *
  **********************************************************************************************/
-
 TCPClient::~TCPClient() {
-
 }
 
 /**********************************************************************************************
@@ -37,11 +33,9 @@ TCPClient::~TCPClient() {
  *
  *    Throws: socket_error exception if failed. socket_error is a child class of runtime_error
  **********************************************************************************************/
-
 void TCPClient::connectTo(const char *ip_addr, unsigned short port) {
    if (!_sockfd.connectTo(ip_addr, port))
       throw socket_error("TCP Connection failed!");
-
 }
 
 /**********************************************************************************************
@@ -96,13 +90,13 @@ void TCPClient::handleConnection() {
             fflush(stdout);
          }
       }
-
+      // So we're not chewing up CPU cycles unnecessarily
       nanosleep(&sleeptime, NULL);
    }
 }
 
 /**********************************************************************************************
- * closeConnection - Your comments here
+ * closeConnection - Cleanly closes the socket FD.
  *
  *    Throws: socket_error for recoverable errors, runtime_error for unrecoverable types
  **********************************************************************************************/
@@ -113,9 +107,9 @@ void TCPClient::closeConn() {
 
 /******************************************************************************
  * readStdin - takes input from the user and stores it in a buffer. We only send
- *             the buffer after a carriage return
+ *             the buffer after a carriage return.
  *
- *    Return: 0 if not ready to send, buffer length if ready
+ *    Return: 0 if not ready to send, buffer length if ready.
  *****************************************************************************/
 int TCPClient::readStdin() {
 
@@ -142,5 +136,3 @@ int TCPClient::readStdin() {
    
    return sendto;
 }
-
-

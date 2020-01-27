@@ -13,12 +13,10 @@ const int hashlen = 32;
 const int saltlen = 16;
 
 PasswdMgr::PasswdMgr(const char *pwd_file):_pwd_file(pwd_file) {
-
 }
 
 
 PasswdMgr::~PasswdMgr() {
-
 }
 
 /*******************************************************************************************
@@ -34,7 +32,6 @@ bool PasswdMgr::checkUser(const char *name) {
    bool result = findUser(name, passwd, salt);
 
    return result;
-     
 }
 
 /*******************************************************************************************
@@ -157,18 +154,18 @@ bool PasswdMgr::findUser(const char *name, std::vector<uint8_t> &hash, std::vect
    bool eof = false;
    while (!eof) {
       std::string uname;
-
+      std::cout << "About to check username";
       if (!readUser(pwfile, uname, hash, salt)) {
          eof = true;
          continue;
       }
-
+      std::cout << "About to check username2";
       if (!uname.compare(name)) {
          pwfile.closeFD();
          return true;
       }
    }
-
+   std::cout << "Leaving findUser()";
    hash.clear();
    salt.clear();
    pwfile.closeFD();
@@ -200,5 +197,9 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
 
 void PasswdMgr::addUser(const char *name, const char *passwd) {
    // Add those users!
+   //Open file
+   //Find end of file, start new line
+   //Ask for new username, then add it (with a \n)
+   //Ask for new password, run in through the hash, store hash then salt then \n
 }
 

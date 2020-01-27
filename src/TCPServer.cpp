@@ -17,7 +17,6 @@ TCPServer::TCPServer(){ // :_server_log("server.log", 0) {
 
 
 TCPServer::~TCPServer() {
-
 }
 
 /**********************************************************************************************
@@ -59,11 +58,10 @@ void TCPServer::listenSvr() {
 
    // Start the server socket listening
    _sockfd.listenFD(5);
-
     
    while (online) {
-      struct sockaddr_in cliaddr;
-      socklen_t len = sizeof(cliaddr);
+      struct sockaddr_in clientaddr;
+      socklen_t len = sizeof(clientaddr);
 
       if (_sockfd.hasData()) {
          TCPConn *new_conn = new TCPConn();
@@ -80,7 +78,8 @@ void TCPServer::listenSvr() {
          new_conn->getIPAddrStr(ipaddr_str);
 
 
-         new_conn->sendText("Welcome to the CSCE 689 Server!\n");
+         new_conn->sendText("Welcome to the client authentication server!\n");
+         // **Log connection (if/else for whitelist) with IP
 
          // Change this later
          new_conn->startAuthentication();
@@ -92,7 +91,7 @@ void TCPServer::listenSvr() {
       {
          // If the user lost connection
          if (!(*tptr)->isConnected()) {
-            // Log it
+            // **Log it
 
             // Remove them from the connect list
             tptr = _connlist.erase(tptr);
@@ -109,10 +108,7 @@ void TCPServer::listenSvr() {
 
       // So we're not chewing up CPU cycles unnecessarily
       nanosleep(&sleeptime, NULL);
-   } 
-
-
-   
+   }   
 }
 
 
@@ -121,9 +117,7 @@ void TCPServer::listenSvr() {
  *
  *    Throws: socket_error for recoverable errors, runtime_error for unrecoverable types
  **********************************************************************************************/
-
 void TCPServer::shutdown() {
-
    _sockfd.closeFD();
 }
 

@@ -38,7 +38,6 @@ public:
 
 private:
 
-
    enum statustype { s_username, s_changepwd, s_confirmpwd, s_passwd, s_menu };
 
    statustype _status = s_username;
@@ -46,6 +45,7 @@ private:
    SocketFD _connfd;
  
    std::string _username; // The username this connection is associated with
+   char* user;
 
    std::string _inputbuf;
 
