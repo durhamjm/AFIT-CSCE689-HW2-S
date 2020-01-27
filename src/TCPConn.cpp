@@ -9,7 +9,7 @@
 #include "PasswdMgr.h"
 
 // The filename/path of the password file
-const char pwdfilename[] = "src/passwd";
+const char pwdfilename[] = "/home/user1/AFIT-CSCE689-HW2-S/src/passwd";
 PasswdMgr pmgr(pwdfilename);
 
 TCPConn::TCPConn(){ 
@@ -157,6 +157,8 @@ void TCPConn::getPasswd() {
 
 void TCPConn::changePassword() {
    // Insert your amazing code here
+   // Get new password
+   // Run hash (basically the second half of adding a new user)
 }
 
 

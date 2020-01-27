@@ -30,6 +30,9 @@ class PasswdMgr {
       int writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t> &hash, std::vector<uint8_t> &salt);
 
       std::string _pwd_file;
+
+      uint32_t t_cost, m_cost, parallelism;
+      void *dest;
 };
 
 #endif
