@@ -103,11 +103,7 @@ bool PasswdMgr::readUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    // Insert your perfect code here!
    if((pwfile.readStr(name) > 0)) {
       return false;
-   } else if (pwfile.readBytes(hash, hashlen) == -1) {
-      return false;
-   } else if (pwfile.readBytes(salt, saltlen) == -1) {
-      return false;
-   }
+   } 
 
    return true;
 }
