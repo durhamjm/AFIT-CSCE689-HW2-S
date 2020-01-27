@@ -9,8 +9,8 @@
 #include "PasswdMgr.h"
 
 // The filename/path of the password file
-const char pwdfilename[] = "passwd";
-PasswdMgr pmgr("passwd");
+const char pwdfilename[] = "src/passwd";
+PasswdMgr pmgr(pwdfilename);
 
 TCPConn::TCPConn(){ 
    // LogMgr &server_log):_server_log(server_log) {
