@@ -120,15 +120,15 @@ void TCPConn::handleConnection() {
 void TCPConn::getUsername() {
    // Insert your mind-blowing code here
    _connfd.writeFD("Username: ");
-   if (!getUserInput(_username)) {
-      std::cout << "Error getting username.";
+   if (getUserInput(_username) == false) {
+      std::cout << "Error getting username.\n";
    }
    char user[_username.size() + 1];
-   strcpy(user, _username.c_str());
+   strncpy(user, _username.c_str(), sizeof(user));
    if (!pmgr.checkUser(user)) {
-      std::cout << "Unknown user.";
+      std::cout << "Unknown user.\n";
    } else {
-      getPasswd();
+      _status = s_passwd;
    }
 
 }

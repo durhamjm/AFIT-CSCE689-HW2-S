@@ -8,6 +8,7 @@
 #include "PasswdMgr.h"
 #include "FileDesc.h"
 #include "strfuncts.h"
+#include <fstream>
 
 const int hashlen = 32;
 const int saltlen = 16;
@@ -80,7 +81,14 @@ bool PasswdMgr::checkPasswd(const char *name, const char *passwd) {
 bool PasswdMgr::changePasswd(const char *name, const char *passwd) {
 
    // Insert your insane code here
+   // Ask user for new password
 
+   // Run it through hash
+   // hashArgon2(ret_hash?, ret_salt?, passwd, in_salt?)
+
+   // write it to file
+   // writeUser(pwfile, name, hash, salt)
+   std::cout << "Password updated successfully!\n";
    return true;
 }
 
@@ -126,6 +134,14 @@ int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    int results = 0;
 
    // Insert your wild code here!
+   //Open file
+   FileFD pwfile(_pwd_file.c_str());
+
+   //Find end of file, start new line
+   std::ofstream out;
+   // out.open(pwfile std::ios::app); ** gives error about type
+
+   //out << username << \n << { << hash << }{ << salt << }\n
 
    return results; 
 }
@@ -151,24 +167,24 @@ bool PasswdMgr::findUser(const char *name, std::vector<uint8_t> &hash, std::vect
    // You may need to change this code for your specific implementation
 
    if (!pwfile.openFile(FileFD::readfd))
-      throw pwfile_error("Could not open passwd file for reading");
+      throw pwfile_error("Could not open passwd file for reading\n");
 
    // Password file should be in the format username\n{32 byte hash}{16 byte salt}\n
    bool eof = false;
    while (!eof) {
       std::string uname;
-      std::cout << "About to check username";
+      //std::cout << "About to check username\n";
       if (!readUser(pwfile, uname, hash, salt)) {
          eof = true;
          continue;
       }
-      std::cout << "About to check username2";
+      //std::cout << "About to check username2\n";
       if (!uname.compare(name)) {
          pwfile.closeFD();
          return true;
       }
    }
-   std::cout << "Leaving findUser()";
+   std::cout << "Leaving findUser()\n";
    hash.clear();
    salt.clear();
    pwfile.closeFD();
@@ -200,9 +216,17 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
 
 void PasswdMgr::addUser(const char *name, const char *passwd) {
    // Add those users!
-   //Open file
-   //Find end of file, start new line
+
    //Ask for new username, then add it (with a \n)
-   //Ask for new password, run in through the hash, store hash then salt then \n
+   std::cout << "Adding new user...\n";
+   std::cout << "Enter username: \n";
+   //TCPConn::getUserInput(name);
+
+   //Ask for new password, run in through the hash w/ salt 
+   std::cout << "Enter password: \n";
+   //TCPConn::getUserInput(passwd);
+   //hashArgon2(ret_hash?, ret_salt?, passwd, in_salt?)
+   //writeUser(pwfile, name, hash, salt);
+
 }
 
