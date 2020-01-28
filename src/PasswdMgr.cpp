@@ -9,6 +9,7 @@
 #include "FileDesc.h"
 #include "strfuncts.h"
 #include <fstream>
+#include <cstdio>
 
 const int hashlen = 32;
 const int saltlen = 16;
@@ -57,7 +58,7 @@ bool PasswdMgr::checkPasswd(const char *name, const char *passwd) {
    if (!findUser(name, userhash, salt))
       return false;
 
-   hashArgon2(passhash, salt, passwd, &salt);
+   hashArgon2(passhash, salt, passwd);
 
    if (userhash == passhash)
       return true;
@@ -112,7 +113,24 @@ bool PasswdMgr::readUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    if((pwfile.readStr(name) <= 0)) {
       return false;
    } 
+   // Read the /n
+   std::vector<uint8_t> tempByte;
+   if ((pwfile.readBytes<uint8_t>(tempByte, 1) <= 0)) {
 
+   }
+
+   if((pwfile.readBytes<uint8_t>(hash, 32) <= 0)) {
+      return false;
+   }
+
+   if((pwfile.readBytes<uint8_t>(salt, 16) <= 0)) {
+      return false;
+   }
+
+   // read the /n
+   if ((pwfile.readBytes<uint8_t>(tempByte, 1) <= 0)) {
+
+   }
    return true;
 }
 
@@ -135,7 +153,7 @@ int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
 
    // Insert your wild code here!
    //Open file
-   FileFD pwfile(_pwd_file.c_str());
+   //FileFD pwfile2(pwfile.c_str());
 
    //Find end of file, start new line
    std::ofstream out;
@@ -202,9 +220,27 @@ bool PasswdMgr::findUser(const char *name, std::vector<uint8_t> &hash, std::vect
  *    Throws: runtime_error if the salt passed in is not the right size
  *****************************************************************************************************/
 void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> &ret_salt, 
-                           const char *in_passwd, std::vector<uint8_t> *in_salt) {
+                           const char *in_passwd) {
    // Hash those passwords!!!!
-   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), in_salt, saltlen, dest, hashlen);
+
+   std::vector<uint8_t> *salt, *hash;
+   int i = 0;
+   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), salt, saltlen, hash, hashlen);
+
+   for (i; i < saltlen; i++) {
+      salt[i] = ((rand() % 93) + 33);
+   }
+
+   ret_hash.clear();
+   ret_salt.clear();
+   //ret_hash = hash;
+   for (i; i < hashlen; i++) {
+      ret_hash[i] = hash[i];
+   }
+   //ret_salt = salt;
+   for (i; i < saltlen; i++) {
+      ret_salt[i] = salt[i];
+   }
 }
 
 /****************************************************************************************************
@@ -220,12 +256,15 @@ void PasswdMgr::addUser(const char *name, const char *passwd) {
    //Ask for new username, then add it (with a \n)
    std::cout << "Adding new user...\n";
    std::cout << "Enter username: \n";
-   //TCPConn::getUserInput(name);
+   scanf("%c", name);
 
    //Ask for new password, run in through the hash w/ salt 
    std::cout << "Enter password: \n";
-   //TCPConn::getUserInput(passwd);
-   //hashArgon2(ret_hash?, ret_salt?, passwd, in_salt?)
+   scanf("%c", passwd);
+
+   FileFD pwfile(_pwd_file.c_str());
+
+   //create the hash
    //writeUser(pwfile, name, hash, salt);
 
 }

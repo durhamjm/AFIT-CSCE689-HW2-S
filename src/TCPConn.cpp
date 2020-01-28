@@ -9,7 +9,7 @@
 #include "PasswdMgr.h"
 
 // The filename/path of the password file
-const char pwdfilename[] = "/home/user1/AFIT-CSCE689-HW2-S/src/passwd";
+const char pwdfilename[] = "passwd";
 PasswdMgr pmgr(pwdfilename);
 
 TCPConn::TCPConn(){ 
@@ -126,12 +126,12 @@ void TCPConn::getUsername() {
    if (getUserInput(_username) == false) {
       std::cout << "Error getting username.\n";
    }
-   char user[_username.size() + 1];
-   strncpy(user, _username.c_str(), sizeof(user));
-   if (!pmgr.checkUser(user)) {
+
+   if (!pmgr.checkUser(_username.c_str())) {
       std::cout << "Unknown user.\n";
    } else {
       _status = s_passwd;
+      handleConnection();
    }
 
 }
@@ -146,6 +146,20 @@ void TCPConn::getUsername() {
 
 void TCPConn::getPasswd() {
    _connfd.writeFD("Password: ");
+   // change variable to another passwd variable
+   if (getUserInput(_newpwd) == false) {
+      std::cout << "Error getting password.\n";
+   }
+
+   if (!pmgr.checkPasswd(_username.c_str(),_newpwd.c_str())) {
+      std::cout << "Incorrect password. 1 attempt remaining.\n";
+      _pwd_attempts += 1;
+      if (_pwd_attempts >= 2) {
+         _pwd_attempts = 0;
+         std::cout << "Incorrect password. Goodbye.\n";
+         disconnect();
+      }
+   }
    // Insert your astounding code here
 }
 

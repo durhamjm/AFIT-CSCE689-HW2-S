@@ -47,7 +47,6 @@ private:
    SocketFD _connfd;
  
    std::string _username; // The username this connection is associated with
-   char* user;
 
    std::string _inputbuf;
 
