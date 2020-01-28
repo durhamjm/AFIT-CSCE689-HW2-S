@@ -150,14 +150,36 @@ bool PasswdMgr::readUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
 int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t> &hash, std::vector<uint8_t> &salt)
 {
    int results = 0;
-
+   int i = 0;
+   int data;
+   //std::string outhash = hash;
    // Insert your wild code here!
 
-   //Find end of file, start new line
+   /* std::ofstream fin;
    std::ofstream out;
-   // out.open(pwfile std::ios::app); ** gives error about type
+   fin.open("passwd", std::ios::app);
+   fin << name; */
 
-   //out << username << \n << { << hash << }{ << salt << }\n
+
+   //Find end of file, start new line
+   std::ofstream out("passwd", std::ios::app);
+   //if out.eof()) {
+      out << name << std::endl;
+      out << "{";
+      for (i = 0; i < hashlen; i++) {
+         out << hash[i];
+      }
+      out << "}{";
+      i = 0;
+      for (i = 0; i < saltlen; i++) {
+         out << salt[i];
+      }
+      out << "}" << std::endl;
+
+      out.close();
+      results = 1;
+   //}
+   
 
    return results; 
 }
@@ -228,18 +250,22 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
       salt[i] = ((rand() % 93) + 33);
    }
 
-   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), salt, saltlen, hash, hashlen);
+   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, strlen(in_passwd), salt, saltlen, hash, hashlen);
 
    ret_hash.clear();
    ret_salt.clear();
    //ret_hash = hash;
+   i = 0;
    for (i; i < hashlen; i++) {
       ret_hash.push_back(hash[i]);
    }
    //ret_salt = salt;
+   i = 0;
    for (i; i < saltlen; i++) {
       ret_salt.push_back(salt[i]);
    }
+   std::cout << "Hash generated.\n";
+   //std::cout << salt << std::endl;
 }
 
 /****************************************************************************************************
@@ -261,7 +287,11 @@ void PasswdMgr::addUser(const char *name, const char *passwd) {
    //create the hash
    hashArgon2(passhash, salt, passwd);
 
-   writeUser(pwfile, username, passhash, salt);
+   if (writeUser(pwfile, username, passhash, salt) == 1) {
+      std::cout << "User added successfully!\n";
+   } else {
+      std::cout << "Error adding user.\n";
+   }
 
 }
 
