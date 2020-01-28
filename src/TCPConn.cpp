@@ -152,11 +152,15 @@ void TCPConn::getPasswd() {
    }
 
    if (!pmgr.checkPasswd(_username.c_str(),_newpwd.c_str())) {
-      std::cout << "Incorrect password. 1 attempt remaining.\n";
-      _pwd_attempts += 1;
+      if (_pwd_attempts == 0) {
+         std::cout << "\nIncorrect password. 1 attempt remaining.\n";
+         _pwd_attempts += 1;
+      } else if (_pwd_attempts == 1) {
+         _pwd_attempts += 1;
+      }
       if (_pwd_attempts >= 2) {
          _pwd_attempts = 0;
-         std::cout << "Incorrect password. Goodbye.\n";
+         std::cout << "\nIncorrect password. Goodbye.\n";
          disconnect();
       }
    }
