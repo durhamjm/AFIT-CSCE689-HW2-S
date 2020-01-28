@@ -152,8 +152,6 @@ int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    int results = 0;
 
    // Insert your wild code here!
-   //Open file
-   //FileFD pwfile2(pwfile.c_str());
 
    //Find end of file, start new line
    std::ofstream out;
@@ -223,23 +221,24 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
                            const char *in_passwd) {
    // Hash those passwords!!!!
 
-   std::vector<uint8_t> *salt, *hash;
+   char salt[16], hash[32];
    int i = 0;
-   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), salt, saltlen, hash, hashlen);
 
    for (i; i < saltlen; i++) {
       salt[i] = ((rand() % 93) + 33);
    }
 
+   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), salt, saltlen, hash, hashlen);
+
    ret_hash.clear();
    ret_salt.clear();
    //ret_hash = hash;
    for (i; i < hashlen; i++) {
-      ret_hash[i] = hash[i];
+      ret_hash.push_back(hash[i]);
    }
    //ret_salt = salt;
    for (i; i < saltlen; i++) {
-      ret_salt[i] = salt[i];
+      ret_salt.push_back(salt[i]);
    }
 }
 
@@ -252,20 +251,17 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
 
 void PasswdMgr::addUser(const char *name, const char *passwd) {
    // Add those users!
-
-   //Ask for new username, then add it (with a \n)
-   std::cout << "Adding new user...\n";
-   std::cout << "Enter username: \n";
-   scanf("%c", name);
-
-   //Ask for new password, run in through the hash w/ salt 
-   std::cout << "Enter password: \n";
-   scanf("%c", passwd);
-
    FileFD pwfile(_pwd_file.c_str());
 
+   std::vector<uint8_t> userhash; // hash from the password file
+   std::vector<uint8_t> passhash; // hash derived from the parameter passwd
+   std::vector<uint8_t> salt;
+   std::string username = name;
+
    //create the hash
-   //writeUser(pwfile, name, hash, salt);
+   hashArgon2(passhash, salt, passwd);
+
+   writeUser(pwfile, username, passhash, salt);
 
 }
 
