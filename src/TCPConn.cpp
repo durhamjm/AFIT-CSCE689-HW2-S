@@ -119,6 +119,9 @@ void TCPConn::handleConnection() {
 
 void TCPConn::getUsername() {
    // Insert your mind-blowing code here
+   // Do whitelist here - whitelist()
+   // 
+   
    _connfd.writeFD("Username: ");
    if (getUserInput(_username) == false) {
       std::cout << "Error getting username.\n";
@@ -296,3 +299,11 @@ void TCPConn::getIPAddrStr(std::string &buf) {
    return _connfd.getIPAddrStr(buf);
 }
 
+bool TCPConn::whitelist() {
+   // Get client's IP from getIPAddrStr()
+   // Open whitelist file
+
+   // Compare client's IP to whitelist, return false if no match found
+
+   return true;
+}

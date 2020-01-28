@@ -36,6 +36,8 @@ public:
    void getIPAddrStr(std::string &buf);
    const char *getUsernameStr() { return _username.c_str(); };
 
+   bool whitelist();
+
 private:
 
    enum statustype { s_username, s_changepwd, s_confirmpwd, s_passwd, s_menu };
