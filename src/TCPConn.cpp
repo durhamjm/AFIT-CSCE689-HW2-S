@@ -153,17 +153,19 @@ void TCPConn::getPasswd() {
 
    if (!pmgr.checkPasswd(_username.c_str(),_newpwd.c_str())) {
       if (_pwd_attempts == 0) {
-         std::cout << "\nIncorrect password. 1 attempt remaining.\n";
+         _connfd.writeFD("\nIncorrect password. 1 attempt remaining.\n");
          _pwd_attempts += 1;
       } else if (_pwd_attempts == 1) {
-         _pwd_attempts += 1;
-      }
-      if (_pwd_attempts >= 2) {
-         _pwd_attempts = 0;
-         std::cout << "\nIncorrect password. Goodbye.\n";
+         _connfd.writeFD("\nIncorrect password. Goodbye.\n");
          disconnect();
+      } 
+   } else {
+         std::cout << "Successfully authenticated.\n";
+         _connfd.writeFD("Success!");
+         sendMenu();
+         _status = s_menu;
+         handleConnection();
       }
-   }
    // Insert your astounding code here
 }
 
@@ -178,8 +180,12 @@ void TCPConn::getPasswd() {
 
 void TCPConn::changePassword() {
    // Insert your amazing code here
-   // Get new password
-   // Run hash (basically the second half of adding a new user)
+   getUserInput(_newpwd);
+   if (!pmgr.changePasswd(_username.c_str(), _newpwd.c_str())) {
+      std::cout << "Error changing password.\n";
+   }
+   _connfd.writeFD("Password changed successfully!\nEnter a command.\n");
+   _status = s_menu;
 }
 
 
@@ -248,7 +254,7 @@ void TCPConn::getMenuChoice() {
    } else if (cmd.compare("1") == 0) {
       _connfd.writeFD("It can be on time, on budget, or functional, but it can't be all three.\n");
    } else if (cmd.compare("2") == 0) {
-      _connfd.writeFD("Why did Adele cross the road? To say hello from the other side.");
+      _connfd.writeFD("Why did Adele cross the road? To say hello from the other side.\n");
    } else if (cmd.compare("3") == 0) {
       _connfd.writeFD("That seems like a terrible idea.\n");
    } else if (cmd.compare("4") == 0) {

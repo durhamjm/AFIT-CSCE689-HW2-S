@@ -69,15 +69,24 @@ bool PasswdMgr::checkPasswd(const char *name, const char *passwd) {
       salt2[i] = salt [i];
    }
    hashArgon2(passhash, salt, passwd, salt2);
-   std::cout << "test";
-   // for (i = 0; i < sizeof(passhash); i++) {
-   //    std::cout << passhash[i];
-   // }
+   
+   for (i = 0; i < sizeof(passhash); i++) {
+      std::cout << passhash[i];
+   }
+   std::cout << std::endl;
+   for (i = 0; i < sizeof(userhash); i++) {
+      std::cout << userhash[i];
+   }
 
-   if (userhash == passhash)
+   if (userhash == passhash) {
       return true;
-
-   return false;
+   } else if (userhash != passhash) {
+      return false;
+   } else {
+      std::cout << "ERROR!\n";
+      return false;
+   }
+   
 }
 
 /*******************************************************************************************
@@ -94,12 +103,69 @@ bool PasswdMgr::checkPasswd(const char *name, const char *passwd) {
  *******************************************************************************************/
 
 bool PasswdMgr::changePasswd(const char *name, const char *passwd) {
+   // pwfile.openFile(FileFD::writefd);
 
    // Insert your insane code here
-   // Ask user for new password
+   std::vector<uint8_t> userhash; // hash from the password file
+   std::vector<uint8_t> passhash; // hash derived from the parameter passwd
+   std::vector<uint8_t> saltfile, salthash;
+   std::string username;
+   std::string search, found, buffer;
+   std::vector<uint8_t> tempByte;
+   char hash[32], salt[16];
+   int i = 0;
+
+   std::fstream readFile(_pwd_file);
+   //std::cout << "File loaded correctly.\n";
+
+   // readUser(pwfile, username, userhash, saltfile);
+
+   getline(readFile, username);
+   while (username != "") {
+      if (!username.compare(name)) {
+         int pos = 1 + readFile.tellg();
+
+         readFile.read(hash, 32);
+         readFile.read(salt, 16);
+
+         for (i = 0; i < 16; i++) {
+            saltfile.push_back(salt[i]);
+         }
+         //std::cout << "About to hash.\n";
+         hashArgon2(passhash, saltfile, passwd, 0);
+
+         for (i = 0; i < 32; i++) {
+            hash[i] = passhash[i];
+         }
+         readFile.seekg(pos);
+         readFile.write(hash, 32);
+         readFile.close();
+         std::cout << "Password updated successfully!!\n";
+         hash[0] = '\0';
+         salt[0] = '\0';
+         passhash.clear();
+         saltfile.clear();
+         return true;        
+         } else {
+            getline(readFile, username);
+      }
+   }
 
    // Run it through hash
-   // hashArgon2(ret_hash?, ret_salt?, passwd, in_salt?)
+   
+
+   //pwfile.readFD(buffer)
+   // if ((pwfile.readStr(username) <= 0 )) {
+   //    pwfile.readBytes<uint8_t>(tempByte, 1);
+   //    pwfile.writeBytes(passhash);
+   //    pwfile.readBytes<uint8_t>(tempByte, 2);
+   //    pwfile.writeBytes(salthash);
+   // }
+
+   // pwfile.readFD(buffer);
+   // std::vector<uint8_t> search2(buffer);
+   // buffer.replace(buffer.find(userhash), sizeof(userhash), passhash);
+   
 
    // write it to file
    // writeUser(pwfile, name, hash, salt)
@@ -129,7 +195,7 @@ bool PasswdMgr::readUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    } 
    // Read the /n{
    std::vector<uint8_t> tempByte;
-   if ((pwfile.readBytes<uint8_t>(tempByte, 2) <= 0)) {
+   if ((pwfile.readBytes<uint8_t>(tempByte, 1) <= 0)) {
       return false;
    }
    // Read the hash
@@ -137,7 +203,7 @@ bool PasswdMgr::readUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
       return false;
    }
    // Read the }{
-   if ((pwfile.readBytes<uint8_t>(tempByte, 1) <= 0)) {
+   if ((pwfile.readBytes<uint8_t>(tempByte, 2) <= 0)) {
       return false;
    }
    // Read the salt
@@ -297,7 +363,7 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
       }
    }
 
-   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, sizeof(in_passwd), salt, saltlen, hash, hashlen);
+   argon2i_hash_raw(t_cost, m_cost, parallelism, in_passwd, strlen(in_passwd), salt, saltlen, hash, hashlen);
 
    ret_hash.clear();
    ret_salt.clear();
