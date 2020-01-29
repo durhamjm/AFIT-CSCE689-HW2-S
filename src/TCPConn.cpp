@@ -363,7 +363,6 @@ void TCPConn::getMenuChoice() {
 void TCPConn::sendMenu() {
    std::string menustr;
 
-   // Make this your own!
    menustr += "Acceptable commands: \n";
    menustr += "  1 - Know your limits\n";
    menustr += "  2 - Hear a joke\n";
@@ -423,11 +422,11 @@ bool TCPConn::whitelist() {
       // std::cout << list;
       // std::cout << clientIP;
       if (list == clientIP) {
-         std::cout << "Good on whitelist.\n";
+         //std::cout << "Good on whitelist.\n";
          return true;
       } 
    }
-   std::cout << "Bad on whitelist.\n";
+   std::cout << "Attempted connection from unknown IP. Incident logged.\n";
    return false;
 }
 
@@ -435,12 +434,12 @@ bool TCPConn::writeLog(std::string &buf){
    // Find end of file, start new line
    std::ofstream out("server.log", std::ios::app);
 
-      out << getTime();
-      out << " - ";
-      out << buf << std::endl;
-      out.close();
-      return true;
-
+   // Get the time, add formatting, print IP/message/user from buf
+   out << getTime();
+   out << " - ";
+   out << buf << std::endl;
+   out.close();
+   return true;
 }
 
 // Get current date/time in format YYYY-MM-DD.HH:mm:ss
