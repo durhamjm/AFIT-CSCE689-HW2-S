@@ -37,6 +37,8 @@ public:
    const char *getUsernameStr() { return _username.c_str(); };
 
    bool whitelist();
+   bool writeLog(std::string &buf);
+   const std::string getTime();
 
 private:
 

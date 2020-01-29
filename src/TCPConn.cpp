@@ -7,13 +7,18 @@
 #include "TCPConn.h"
 #include "strfuncts.h"
 #include "PasswdMgr.h"
+#include <chrono>
+#include <ctime>
+#include <fstream>
+#include <time.h>
 
-// The filename/path of the password file
+// The filename/path of the password & log file
+const char logfilename[] = "server.log";
 const char pwdfilename[] = "passwd";
 PasswdMgr pmgr(pwdfilename);
 
 TCPConn::TCPConn(){ 
-   // LogMgr &server_log):_server_log(server_log) {
+   //LogMgr &server_log):_server_log(server_log) {
 }
 
 
@@ -59,8 +64,24 @@ int TCPConn::sendText(const char *msg, int size) {
  **********************************************************************************************/
 
 void TCPConn::startAuthentication() {
+   std::string IP;
+   getIPAddrStr(IP);
+   // std::cout << IP << std::endl;
 
-   // Skipping this for now
+   if (!whitelist()) {
+      _connfd.writeFD("You do not have access to this system.\n");
+      disconnect();
+      std::string log = IP + " - unauthorized IP.";
+      if (!writeLog(log)) {
+         std::cout << "Unable to write to log.\n";
+      }
+   } else {
+      std::string log = IP + " - Access from known IP.";
+      if (!writeLog(log)) {
+         std::cout << "Unable to write to log.\n";
+      }
+   }
+   
    _status = s_username;
 }
 
@@ -119,16 +140,22 @@ void TCPConn::handleConnection() {
 
 void TCPConn::getUsername() {
    // Insert your mind-blowing code here
-   // Do whitelist here - whitelist()
-   // 
-   
+   std::string IP;
+   getIPAddrStr(IP);
+   // std::cout << IP << std::endl;
+  
    _connfd.writeFD("Username: ");
    if (getUserInput(_username) == false) {
+      _connfd.writeFD("Error getting username.\n");
       std::cout << "Error getting username.\n";
    }
 
    if (!pmgr.checkUser(_username.c_str())) {
-      std::cout << "Unknown user.\n";
+      _connfd.writeFD("Unknown user.\n");
+      std::string log = IP + " - Invalid user - " + _username;
+      if (!writeLog(log)) {
+         std::cout << "Unable to write to log.\n";
+      }
    } else {
       _status = s_passwd;
       handleConnection();
@@ -157,11 +184,23 @@ void TCPConn::getPasswd() {
          _pwd_attempts += 1;
       } else if (_pwd_attempts == 1) {
          _connfd.writeFD("\nIncorrect password. Goodbye.\n");
+         std::string IP;
+         getIPAddrStr(IP);
+         std::string log = IP + " - Validation failed - " + _username;
+         if (!writeLog(log)) {
+            std::cout << "Unable to write to log.\n";
+         }
          disconnect();
       } 
    } else {
          std::cout << "Successfully authenticated.\n";
          _connfd.writeFD("Success!");
+         std::string IP;
+         getIPAddrStr(IP);
+         std::string log = IP + " - Authenticated - " + _username;
+         if (!writeLog(log)) {
+            std::cout << "Unable to write to log.\n";
+         }
          sendMenu();
          _status = s_menu;
          handleConnection();
@@ -247,6 +286,12 @@ void TCPConn::getMenuChoice() {
       sendMenu();
    } else if (cmd.compare("exit") == 0) {
       _connfd.writeFD("So long and thanks for all the fish!\n");
+      std::string IP;
+      getIPAddrStr(IP);
+      std::string log = IP + " - Disconnected - " + _username;
+      if (!writeLog(log)) {
+         std::cout << "Unable to write to log.\n";
+      }
       disconnect();
    } else if (cmd.compare("passwd") == 0) {
       _connfd.writeFD("Enter new Password: ");
@@ -324,10 +369,59 @@ void TCPConn::getIPAddrStr(std::string &buf) {
 }
 
 bool TCPConn::whitelist() {
+   // Adapted from http://cplusplus.com/forum/beginner/80838/
    // Get client's IP from getIPAddrStr()
    // Open whitelist file
+   std::string clientIP, list; 
+   _connfd.getIPAddrStr(clientIP);
 
-   // Compare client's IP to whitelist, return false if no match found
+   std::ifstream whitelist;
+   whitelist.open("whitelist");
 
-   return true;
+   // Go through the list, remove trailing \n, compare it to client IP
+   while (whitelist >> list) {
+      list.erase(std::remove(list.begin(), list.end(), '\n'), list.end());
+      // std::cout << list;
+      // std::cout << clientIP;
+      if (list == clientIP) {
+         std::cout << "Good on whitelist.\n";
+         return true;
+      } 
+   }
+   std::cout << "Bad on whitelist.\n";
+   return false;
+}
+
+bool TCPConn::writeLog(std::string &buf){
+   // Find end of file, start new line
+   std::ofstream out("server.log", std::ios::app);
+   // if (out.eof()) {
+      out << getTime();
+      out << " ";
+      out << buf << std::endl;
+      out.close();
+      return true;
+   // } else {
+   //    std::cout << "Unable to write to log.\n";
+   //    return false;
+   // }
+
+   // std::string time2 = time;
+   // log.writeFD(time);
+
+   // if (log.writeFD(time) == -1) {
+   //    std::cout << "Error writing to FD\n";
+   //    return false;
+   // };
+}
+
+// Get current date/time in format YYYY-MM-DD.HH:mm:ss
+// Adapted from https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c/
+const std::string TCPConn::getTime(){
+   std::time_t time = std::time(0);
+   struct tm tstruct;
+   char buf2[80];
+   tstruct = *localtime(&time);
+   strftime(buf2, sizeof(buf2), "%Y-%m-%d.%X", &tstruct);
+   return buf2;
 }

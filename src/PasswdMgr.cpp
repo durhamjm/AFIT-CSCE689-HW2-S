@@ -68,25 +68,27 @@ bool PasswdMgr::checkPasswd(const char *name, const char *passwd) {
    for (i = 0; i < saltlen; i ++) {
       salt2[i] = salt [i];
    }
+
    hashArgon2(passhash, salt, passwd, salt2);
    
-   for (i = 0; i < sizeof(passhash); i++) {
-      std::cout << passhash[i];
-   }
-   std::cout << std::endl;
-   for (i = 0; i < sizeof(userhash); i++) {
-      std::cout << userhash[i];
-   }
+   // **Output hashes for debugging
+   // for (i = 0; i < sizeof(passhash); i++) {
+   //    std::cout << passhash[i];
+   // }
+   // std::cout << std::endl;
+   // for (i = 0; i < sizeof(userhash); i++) {
+   //    std::cout << userhash[i];
+   // }
 
    if (userhash == passhash) {
       return true;
    } else if (userhash != passhash) {
       return false;
-   } else {
-      std::cout << "ERROR!\n";
-      return false;
-   }
-   
+   } // else {
+   //    std::cout << "Error checking password.\n";
+   //    return false;
+   // }
+   return false;
 }
 
 /*******************************************************************************************
@@ -108,18 +110,15 @@ bool PasswdMgr::changePasswd(const char *name, const char *passwd) {
    // Insert your insane code here
    std::vector<uint8_t> userhash; // hash from the password file
    std::vector<uint8_t> passhash; // hash derived from the parameter passwd
-   std::vector<uint8_t> saltfile, salthash;
+   std::vector<uint8_t> saltfile;
    std::string username;
-   std::string search, found, buffer;
-   std::vector<uint8_t> tempByte;
    char hash[32], salt[16];
    int i = 0;
 
    std::fstream readFile(_pwd_file);
    //std::cout << "File loaded correctly.\n";
 
-   // readUser(pwfile, username, userhash, saltfile);
-
+   // Read pwfile, compare usernames, get position when it's the correct name
    getline(readFile, username);
    while (username != "") {
       if (!username.compare(name)) {
@@ -128,17 +127,23 @@ bool PasswdMgr::changePasswd(const char *name, const char *passwd) {
          readFile.read(hash, 32);
          readFile.read(salt, 16);
 
-         for (i = 0; i < 16; i++) {
-            saltfile.push_back(salt[i]);
-         }
+         // Create new hash
          //std::cout << "About to hash.\n";
          hashArgon2(passhash, saltfile, passwd, 0);
 
          for (i = 0; i < 32; i++) {
             hash[i] = passhash[i];
          }
+         for (i = 0; i < 16; i++) {
+            salt[i] = saltfile[i];
+         }
+
+         // Find where to start writing, write the new hash & salt
          readFile.seekg(pos);
          readFile.write(hash, 32);
+         pos += 34;
+         readFile.seekg(pos);
+         readFile.write(salt, 16);
          readFile.close();
          std::cout << "Password updated successfully!!\n";
          hash[0] = '\0';
@@ -151,25 +156,7 @@ bool PasswdMgr::changePasswd(const char *name, const char *passwd) {
       }
    }
 
-   // Run it through hash
-   
-
-   //pwfile.readFD(buffer)
-   // if ((pwfile.readStr(username) <= 0 )) {
-   //    pwfile.readBytes<uint8_t>(tempByte, 1);
-   //    pwfile.writeBytes(passhash);
-   //    pwfile.readBytes<uint8_t>(tempByte, 2);
-   //    pwfile.writeBytes(salthash);
-   // }
-
-   // pwfile.readFD(buffer);
-   // std::vector<uint8_t> search2(buffer);
-   // buffer.replace(buffer.find(userhash), sizeof(userhash), passhash);
-   
-
-   // write it to file
-   // writeUser(pwfile, name, hash, salt)
-   std::cout << "Password updated successfully!\n";
+   //std::cout << "Password updated successfully!\n";
    return true;
 }
 
@@ -234,38 +221,38 @@ int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
 {
    int results = 0;
    int i = 0;
+   //Opening the file is crucial, append data to it
    pwfile.openFile(FileFD::appendfd);
    
 
    //std::string outhash = hash;
-   // Insert your wild code here!
 
-   /* std::ofstream fin;
-   std::ofstream out;
-   fin.open("passwd", std::ios::app);
-   fin << name; */
+  // This code functioned correctly, but was replaced during some troubleshooting
+  // Left it in for archive purposes
+    
+         //Find end of file, start new line
+         // std::ofstream out("passwd", std::ios::app);
+         // if (out.eof()) {
+         //    out << name << std::endl;
+         //    out << "{";
+         //    for (i = 0; i < hashlen; i++) {
+         //       out << hash[i];
+         //    }
+         //    out << "}{";
+         //    i = 0;
+         //    for (i = 0; i < saltlen; i++) {
+         //       out << salt[i];
+         //    }
+         //    out << "}" << std::endl;
 
+         //    out.close();
+         //    results = 1;
+         // } 
 
-   //Find end of file, start new line
-   //std::ofstream out("passwd", std::ios::app);
-   //if out.eof()) {
-      // out << name << std::endl;
-      // out << "{";
-      // for (i = 0; i < hashlen; i++) {
-      //    out << hash[i];
-      // }
-      // out << "}{";
-      // i = 0;
-      // for (i = 0; i < saltlen; i++) {
-      //    out << salt[i];
-      // }
-      // out << "}" << std::endl;
-
-      // out.close();
-      // results = 1;
-   //}
+   // Check for error, then write full formatted hash/salt to file
    if (pwfile.writeFD(name) == -1) {
       std::cout << "Error writing to FD\n";
+      return results;
    };
    pwfile.writeFD("\n{");
    pwfile.writeBytes(hash);
@@ -274,14 +261,15 @@ int PasswdMgr::writeUser(FileFD &pwfile, std::string &name, std::vector<uint8_t>
    pwfile.writeFD("}\n");
    results = 1;
 
-   std::cout << name << std::endl;
-   for (i = 0; i < hashlen; i++) {
-      std::cout << hash[i];
-   }
-   std::cout << std::endl;
-   for (i = 0; i < saltlen; i++) {
-      std::cout << salt[i];
-   }
+   // **Output hash and salt for debugging
+   // std::cout << name << std::endl;
+   // for (i = 0; i < hashlen; i++) {
+   //    std::cout << hash[i];
+   // }
+   // std::cout << std::endl;
+   // for (i = 0; i < saltlen; i++) {
+   //    std::cout << salt[i];
+   // }
 
    pwfile.closeFD();
 
@@ -326,7 +314,7 @@ bool PasswdMgr::findUser(const char *name, std::vector<uint8_t> &hash, std::vect
          return true;
       }
    }
-   std::cout << "Leaving findUser()\n";
+   //std::cout << "Leaving findUser()\n";
    hash.clear();
    salt.clear();
    pwfile.closeFD();
@@ -353,13 +341,13 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
    if (in_salt != 0) {
       for (i = 0; i < saltlen; i++) {
       salt[i] = in_salt[i];
-      std::cout << "\nUsed input salt.\n";
-      std::cout << in_salt[i] << std::endl;
+      //std::cout << "\nUsed input salt.\n";
+      //std::cout << in_salt[i] << std::endl;
       }
    } else {
       for (i = 0; i < saltlen; i++) {
       salt[i] = ((rand() % 93) + 33);
-      std::cout << "\nUsed rng salt.\n";
+      //std::cout << "\nUsed rng salt.\n";
       }
    }
 
@@ -377,7 +365,7 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
    for (i = 0; i < saltlen; i++) {
       ret_salt.push_back(salt[i]);
    }
-   std::cout << "Hash generated.\n";
+   //std::cout << "Hash generated.\n";
    //std::cout << salt << std::endl;
 }
 
@@ -389,7 +377,7 @@ void PasswdMgr::hashArgon2(std::vector<uint8_t> &ret_hash, std::vector<uint8_t> 
  ****************************************************************************************************/
 
 void PasswdMgr::addUser(const char *name, const char *passwd) {
-   // Add those users!
+   // Duplicate user check happens in adduser_main.cpp:42
    FileFD pwfile(_pwd_file.c_str());
 
    std::vector<uint8_t> userhash; // hash from the password file
@@ -397,9 +385,10 @@ void PasswdMgr::addUser(const char *name, const char *passwd) {
    std::vector<uint8_t> salt;
    std::string username = name;
 
-   //create the hash
+   // Create the hash
    hashArgon2(passhash, salt, passwd, 0);
 
+   // Write the data
    if (writeUser(pwfile, username, passhash, salt) == 1) {
       std::cout << "User added successfully!\n";
    } else {
