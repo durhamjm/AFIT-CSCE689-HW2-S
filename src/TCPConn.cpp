@@ -13,7 +13,6 @@
 #include <time.h>
 
 // The filename/path of the password & log file
-const char logfilename[] = "server.log";
 const char pwdfilename[] = "passwd";
 PasswdMgr pmgr(pwdfilename);
 
@@ -64,10 +63,12 @@ int TCPConn::sendText(const char *msg, int size) {
  **********************************************************************************************/
 
 void TCPConn::startAuthentication() {
+   // Get client IP
    std::string IP;
    getIPAddrStr(IP);
    // std::cout << IP << std::endl;
 
+   // Check whitelist, allow access if listed, log attempt
    if (!whitelist()) {
       _connfd.writeFD("You do not have access to this system.\n");
       disconnect();
@@ -139,28 +140,30 @@ void TCPConn::handleConnection() {
  **********************************************************************************************/
 
 void TCPConn::getUsername() {
-   // Insert your mind-blowing code here
+   // Get client IP
    std::string IP;
    getIPAddrStr(IP);
    // std::cout << IP << std::endl;
   
+   // Get username
    _connfd.writeFD("Username: ");
    if (getUserInput(_username) == false) {
       _connfd.writeFD("Error getting username.\n");
       std::cout << "Error getting username.\n";
    }
 
+   // Compare username to known users, log if unknown
    if (!pmgr.checkUser(_username.c_str())) {
       _connfd.writeFD("Unknown user.\n");
       std::string log = IP + " - Invalid user - " + _username;
       if (!writeLog(log)) {
          std::cout << "Unable to write to log.\n";
       }
+   // When username is good, ask for password
    } else {
       _status = s_passwd;
       handleConnection();
    }
-
 }
 
 /**********************************************************************************************
@@ -172,17 +175,20 @@ void TCPConn::getUsername() {
  **********************************************************************************************/
 
 void TCPConn::getPasswd() {
+   // Get password 
    _connfd.writeFD("Password: ");
-   // change variable to another passwd variable
    if (getUserInput(_newpwd) == false) {
       std::cout << "Error getting password.\n";
    }
 
+   // Check password limiting to 2 attempts
    if (!pmgr.checkPasswd(_username.c_str(),_newpwd.c_str())) {
       if (_pwd_attempts == 0) {
          _connfd.writeFD("\nIncorrect password. 1 attempt remaining.\n");
          _pwd_attempts += 1;
-      } else if (_pwd_attempts == 1) {
+      } 
+      // Log incorrect login attempt and disconect user
+      else if (_pwd_attempts == 1) {
          _connfd.writeFD("\nIncorrect password. Goodbye.\n");
          std::string IP;
          getIPAddrStr(IP);
@@ -192,7 +198,9 @@ void TCPConn::getPasswd() {
          }
          disconnect();
       } 
-   } else {
+   } 
+   // On success, log authentication and pass user to menu
+   else {
          std::cout << "Successfully authenticated.\n";
          _connfd.writeFD("Success!");
          std::string IP;
@@ -205,7 +213,6 @@ void TCPConn::getPasswd() {
          _status = s_menu;
          handleConnection();
       }
-   // Insert your astounding code here
 }
 
 /**********************************************************************************************
@@ -218,12 +225,39 @@ void TCPConn::getPasswd() {
  **********************************************************************************************/
 
 void TCPConn::changePassword() {
-   // Insert your amazing code here
+   std::string _newpwd2;
+
+   // Get password once
+   _connfd.writeFD("Enter new Password: ");
+   fflush(stdout);
    getUserInput(_newpwd);
-   if (!pmgr.changePasswd(_username.c_str(), _newpwd.c_str())) {
+   clrNewlines(_newpwd); 
+
+   // Get password second time
+   _connfd.writeFD("Enter password again: ");
+   fflush(stdout);
+   getUserInput(_newpwd2);
+   clrNewlines(_newpwd2);
+
+   // If passwords match, change it
+   if (_newpwd == _newpwd2) {
+      if (!pmgr.changePasswd(_username.c_str(), _newpwd.c_str())) {
       std::cout << "Error changing password.\n";
+      }
+   } else {
+      _connfd.writeFD("Passwords did not match. Returning to menu.\nEnter a command.\n");
+      _status = s_menu;
+      return;
    }
+   
+   // Log password changed and send user back to menu
    _connfd.writeFD("Password changed successfully!\nEnter a command.\n");
+   std::string IP;
+   getIPAddrStr(IP);
+   std::string log = IP + " - Password changed - " + _username;
+   if (!writeLog(log)) {
+      std::cout << "Unable to write to log.\n";
+   }
    _status = s_menu;
 }
 
@@ -278,7 +312,6 @@ void TCPConn::getMenuChoice() {
       return;
    lower(cmd);      
 
-   // Don't be lazy and use my outputs--make your own!
    std::string msg;
    if (cmd.compare("hello") == 0) {
       _connfd.writeFD("Hello and welcome to the client authentication server!\n");
@@ -294,19 +327,25 @@ void TCPConn::getMenuChoice() {
       }
       disconnect();
    } else if (cmd.compare("passwd") == 0) {
-      _connfd.writeFD("Enter new Password: ");
       _status = s_changepwd;
    } else if (cmd.compare("1") == 0) {
       _connfd.writeFD("It can be on time, on budget, or functional, but it can't be all three.\n");
    } else if (cmd.compare("2") == 0) {
       _connfd.writeFD("Why did Adele cross the road? To say hello from the other side.\n");
    } else if (cmd.compare("3") == 0) {
-      _connfd.writeFD("That seems like a terrible idea.\n");
+      msg = getTime();
+      msg += "\n";
+      _connfd.writeFD(msg);
    } else if (cmd.compare("4") == 0) {
-
+      _connfd.writeFD("Why would the server care? *wink*\n");
+      std::string IP;
+      getIPAddrStr(IP);
+      std::string log = IP + " - User is bored! - " + _username;
+      if (!writeLog(log)) {
+         std::cout << "Unable to write to log.\n";
+      }
    } else if (cmd.compare("5") == 0) {
-      _connfd.writeFD("I'm singing, I'm in a computer and I'm siiiingiiiing! I'm in a\n");
-      _connfd.writeFD("computer and I'm siiiiiiinnnggiiinnggg!\n");
+      _connfd.writeFD("run warcraft.exe\n");
    } else {
       msg = "Unrecognized command: ";
       msg += cmd;
@@ -326,16 +365,16 @@ void TCPConn::sendMenu() {
 
    // Make this your own!
    menustr += "Acceptable commands: \n";
-   menustr += "  1). Know your limits\n";
-   menustr += "  2). Hear a joke\n";
-   menustr += "  3). Play global thermonuclear war\n";
-   menustr += "  4). Do nothing.\n";
-   menustr += "  5). Sing. Sing a song. Make it simple, to last the whole day long.\n\n";
+   menustr += "  1 - Know your limits\n";
+   menustr += "  2 - Hear a joke\n";
+   menustr += "  3 - Get the time\n";
+   menustr += "  4 - Tell the server you're bored\n";
+   menustr += "  5 - Play a game\n";
    menustr += "Misc. commands: \n";
    menustr += "  Hello - welcome message\n";
    menustr += "  Passwd - change your password\n";
    menustr += "  Menu - display this menu\n";
-   menustr += "  Exit - disconnect.\n\n";
+   menustr += "  Exit - disconnect\n\n";
 
    _connfd.writeFD(menustr);
 }
@@ -395,24 +434,13 @@ bool TCPConn::whitelist() {
 bool TCPConn::writeLog(std::string &buf){
    // Find end of file, start new line
    std::ofstream out("server.log", std::ios::app);
-   // if (out.eof()) {
+
       out << getTime();
-      out << " ";
+      out << " - ";
       out << buf << std::endl;
       out.close();
       return true;
-   // } else {
-   //    std::cout << "Unable to write to log.\n";
-   //    return false;
-   // }
 
-   // std::string time2 = time;
-   // log.writeFD(time);
-
-   // if (log.writeFD(time) == -1) {
-   //    std::cout << "Error writing to FD\n";
-   //    return false;
-   // };
 }
 
 // Get current date/time in format YYYY-MM-DD.HH:mm:ss
