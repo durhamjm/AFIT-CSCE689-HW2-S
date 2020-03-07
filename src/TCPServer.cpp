@@ -29,7 +29,7 @@ TCPServer::~TCPServer() {
 void TCPServer::bindSvr(const char *ip_addr, short unsigned int port) {
 
    struct sockaddr_in servaddr;
-
+   
    // _server_log.writeLog("Server started.");
 
    // Set the socket to nonblocking
@@ -78,7 +78,7 @@ void TCPServer::listenSvr() {
          new_conn->getIPAddrStr(ipaddr_str);
 
 
-         new_conn->sendText("Welcome to the client authentication server!\n");
+         new_conn->sendText("Welcome to the prime factor server!\n");
          // **Log connection (if/else for whitelist) with IP
 
          // Change this later

@@ -2,6 +2,10 @@
 #define TCPCONN_H
 
 #include "FileDesc.h"
+#include <list>
+#include "boost/multiprecision/cpp_int.hpp"
+
+//using namespace boost::multiprecision;
 
 const int max_attempts = 2;
 
@@ -13,6 +17,11 @@ public:
    TCPConn(/* LogMgr &server_log*/);
    ~TCPConn();
 
+   int getNumber();
+
+   boost::multiprecision::uint256_t num, div1, div2;
+   bool div_found = false;
+
    bool accept(SocketFD &server);
 
    int sendText(const char *msg);
@@ -20,8 +29,8 @@ public:
 
    void handleConnection();
    void startAuthentication();
-   void getUsername();
-   void getPasswd();
+   boost::multiprecision::uint256_t getUsername();
+   boost::multiprecision::uint256_t getPasswd(boost::multiprecision::uint256_t n);
    void sendMenu();
    void getMenuChoice();
    void setPassword();
@@ -40,9 +49,20 @@ public:
    bool writeLog(std::string &buf);
    const std::string getTime();
 
+   boost::multiprecision::uint256_t modularPow(boost::multiprecision::uint256_t base, boost::multiprecision::uint256_t exponent, boost::multiprecision::uint256_t modulus);
+   void factor(boost::multiprecision::uint256_t n);
+   bool isPrimeBF(boost::multiprecision::uint256_t n, boost::multiprecision::uint256_t &divisor);
+   boost::multiprecision::uint256_t calcPollardsRho(boost::multiprecision::uint256_t n);
+   void combinePrimes(std::list<boost::multiprecision::uint256_t> &dest);
+
+   std::list<boost::multiprecision::uint256_t> primes;
+   std::list<boost::multiprecision::uint256_t>::iterator iterator;
+   boost::multiprecision::uint256_t check2;
+
+
 private:
 
-   enum statustype { s_username, s_changepwd, s_confirmpwd, s_passwd, s_menu };
+   enum statustype { s_getnumber, s_username, s_changepwd, s_confirmpwd, s_passwd, s_menu };
 
    statustype _status = s_username;
 

@@ -82,11 +82,11 @@ int main(int argc, char *argv[]) {
    try {
       cout << "Listening.\n";	   
       server.listenSvr();
-   } catch (pwfile_error &e) {
+   } /* catch (pwfile_error &e) {
       cerr << "Error with the password file. Make sure it exists and is readable/writeable by the server.\n";
       cerr << "Error is: " << e.what() << endl;
-      return -1;
-   } catch (socket_error &e) {
+      return -1; */
+   /* } */ catch (socket_error &e) {
       cerr << "Unrecoverable socket error. Exiting.\n";
       cerr << "Error is: " << e.what() << endl;
       return -1;
