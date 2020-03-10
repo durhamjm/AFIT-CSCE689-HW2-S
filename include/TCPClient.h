@@ -4,6 +4,8 @@
 #include <string>
 #include "Client.h"
 #include "FileDesc.h"
+#include "boost/multiprecision/cpp_int.hpp"
+
 
 // The amount to read in before we send a packet
 const unsigned int stdin_bufsize = 50;
@@ -18,6 +20,9 @@ public:
    virtual void connectTo(const char *ip_addr, unsigned short port);
    virtual void handleConnection();
    virtual void closeConn();
+
+   boost::multiprecision::uint256_t num;
+   boost::multiprecision::uint256_t getnum(boost::multiprecision::uint256_t n);
 
 private:
    int readStdin();

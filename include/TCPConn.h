@@ -19,7 +19,7 @@ public:
 
    int getNumber();
 
-   boost::multiprecision::uint256_t num, div1, div2;
+   boost::multiprecision::uint256_t num, numclient, div1, div2;
    bool div_found = false;
 
    bool accept(SocketFD &server);
@@ -44,6 +44,7 @@ public:
    unsigned long getIPAddr() { return _connfd.getIPAddr(); };
    void getIPAddrStr(std::string &buf);
    const char *getUsernameStr() { return _username.c_str(); };
+   boost::multiprecision::uint256_t getnum();
 
    bool whitelist();
    bool writeLog(std::string &buf);

@@ -7,6 +7,7 @@
 #include <vector>
 #include <unistd.h>
 #include "exceptions.h"
+#include "boost/multiprecision/cpp_int.hpp"
 
 // Manages File Descriptors by largely simplfying their interfaces for specific purposes.
 // FileDesc provides some limited functionality and could be instantiated, but child
@@ -27,11 +28,15 @@ public:
 
    // Basic write function to write data to the FD
    ssize_t writeFD(std::string &str);
+   boost::multiprecision::uint256_t writeFD(boost::multiprecision::uint256_t &str);
    ssize_t writeFD(const char *data);
    ssize_t writeFD(const char *data, unsigned int len);
 
    // Basic read function to read all string data off the FD
    ssize_t readFD(std::string &buf);
+   boost::multiprecision::uint256_t readFD(boost::multiprecision::uint256_t &buf);
+   boost::multiprecision::uint256_t writeFD(boost::multiprecision::uint256_t *data, unsigned int len);
+   boost::multiprecision::uint256_t writeFD(boost::multiprecision::uint256_t *data);
 
    // Reads one character from the buffer at a time until it finds a newline
    ssize_t readStr(std::string &buf);

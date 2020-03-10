@@ -9,6 +9,7 @@
 
 #include "FileDesc.h"
 #include "strfuncts.h"
+#include "boost/multiprecision/cpp_int.hpp"
 
 const unsigned int bufsize = 500;
 
@@ -110,6 +111,20 @@ ssize_t FileDesc::readFD(std::string &buf) {
    return amt_read;
 }
 
+boost::multiprecision::uint256_t FileDesc::readFD(boost::multiprecision::uint256_t  &buf) {
+   char *readbuf = new char[bufsize];
+   bzero(readbuf, sizeof(char) * bufsize);
+   boost::multiprecision::uint256_t amt_read = 0;
+   if ((amt_read = read(_fd, readbuf, bufsize)) < 0) {
+      delete readbuf;
+      return -1;
+   }
+   
+   //buf = readbuf;
+   delete readbuf;
+   return amt_read;
+}
+
 /*****************************************************************************************
  * writeFD - writes all the string data provided in str to the FD
  *
@@ -127,6 +142,14 @@ ssize_t FileDesc::writeFD(const char *data) {
 }
 
 ssize_t FileDesc::writeFD(const char *data, unsigned int len) {
+   return write(_fd, data, len);
+}
+
+ boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data) {
+    return writeFD(data, sizeof(data));
+ }
+
+boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data, unsigned int len) {
    return write(_fd, data, len);
 }
 
