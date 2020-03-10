@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <stdexcept>
 #include "TCPClient.h"
+#include "TCPConn.h"
+#include <iostream>
+#include <sstream>
 
 
 /**********************************************************************************************
@@ -56,6 +59,7 @@ void TCPClient::handleConnection() {
    sleeptime.tv_sec = 0;
    sleeptime.tv_nsec = 1000000;
 
+   
 
    // Loop while we have a valid connection
    while (connected) {
@@ -87,13 +91,29 @@ void TCPClient::handleConnection() {
          // Display to the screen
          if (rsize > 0) {
             printf("%s", buf.c_str());
+            //std::cout << "buf is: " << buf.c_str();
             fflush(stdout);
+            std::size_t found = buf.find("Get to work!");
+            if (found != std::string::npos) {
+               std::stringstream num2(buf);
+               num2 >> num;
+               //std::cin >> num;
+               std::cout << "We have a number of " << num << std::endl;
+               //getUsername(num);
+            }
          }
       }
       // So we're not chewing up CPU cycles unnecessarily
       nanosleep(&sleeptime, NULL);
    }
 }
+
+// boost::multiprecision::uint256_t getnum(boost::multiprecision::uint256_t n) {
+//    num = n;
+//    std::cout << "Number is " << num << ". Now get to work!" << std::endl;
+// }
+
+
 
 /**********************************************************************************************
  * closeConnection - Cleanly closes the socket FD.
@@ -123,7 +143,7 @@ int TCPClient::readStdin() {
    if ((amt_read = _stdin.readFD(readbuf)) < 0) {
       throw std::runtime_error("Read on stdin failed unexpectedly.");
    }
-   
+
    _in_buf += readbuf;
 
    // Did we either fill up the buffer or is there a newline/carriage return?
