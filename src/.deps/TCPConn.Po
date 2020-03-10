@@ -169,13 +169,9 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
  /usr/include/c++/8/bits/stl_uninitialized.h \
  /usr/include/c++/8/bits/stl_vector.h \
  /usr/include/c++/8/bits/stl_bvector.h /usr/include/c++/8/bits/vector.tcc \
- ../include/exceptions.h /usr/include/c++/8/list \
- /usr/include/c++/8/bits/stl_list.h \
- /usr/include/c++/8/bits/allocated_ptr.h \
- /usr/include/c++/8/ext/aligned_buffer.h /usr/include/c++/8/bits/list.tcc \
- ../include/boost/multiprecision/cpp_int.hpp /usr/include/c++/8/iomanip \
- /usr/include/c++/8/locale /usr/include/c++/8/bits/locale_facets_nonio.h \
- /usr/include/c++/8/ctime \
+ ../include/exceptions.h ../include/boost/multiprecision/cpp_int.hpp \
+ /usr/include/c++/8/iomanip /usr/include/c++/8/locale \
+ /usr/include/c++/8/bits/locale_facets_nonio.h /usr/include/c++/8/ctime \
  /usr/include/x86_64-linux-gnu/c++/8/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/8/bits/messages_members.h \
  /usr/include/libintl.h /usr/include/c++/8/bits/codecvt.h \
@@ -740,6 +736,9 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
  ../include/boost/container_hash/extensions.hpp \
  ../include/boost/detail/container_fwd.hpp /usr/include/c++/8/deque \
  /usr/include/c++/8/bits/stl_deque.h /usr/include/c++/8/bits/deque.tcc \
+ /usr/include/c++/8/list /usr/include/c++/8/bits/stl_list.h \
+ /usr/include/c++/8/bits/allocated_ptr.h \
+ /usr/include/c++/8/ext/aligned_buffer.h /usr/include/c++/8/bits/list.tcc \
  /usr/include/c++/8/map /usr/include/c++/8/bits/stl_tree.h \
  /usr/include/c++/8/bits/stl_map.h /usr/include/c++/8/bits/stl_multimap.h \
  /usr/include/c++/8/set /usr/include/c++/8/bits/stl_set.h \
@@ -781,7 +780,8 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
  ../include/boost/multiprecision/cpp_int/literals.hpp \
  ../include/boost/multiprecision/cpp_int/serialize.hpp \
  ../include/boost/multiprecision/cpp_int/import_export.hpp \
- ../include/strfuncts.h ../include/PasswdMgr.h /usr/include/c++/8/chrono \
+ ../include/TCPClient.h ../include/Client.h ../include/strfuncts.h \
+ ../include/PasswdMgr.h /usr/include/c++/8/chrono \
  /usr/include/c++/8/ratio /usr/include/c++/8/bits/parse_numbers.h \
  /usr/include/c++/8/fstream \
  /usr/include/x86_64-linux-gnu/c++/8/bits/basic_file.h \
@@ -793,7 +793,220 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
  ../include/boost/config/header_deprecated.hpp \
  ../include/boost/config/pragma_message.hpp \
  ../include/boost/math/common_factor_rt.hpp \
- ../include/boost/multiprecision/cpp_int.hpp
+ ../include/boost/multiprecision/cpp_int.hpp \
+ ../include/boost/algorithm/string.hpp \
+ ../include/boost/algorithm/string/std_containers_traits.hpp \
+ ../include/boost/algorithm/string/std/string_traits.hpp \
+ ../include/boost/algorithm/string/yes_no_type.hpp \
+ ../include/boost/algorithm/string/sequence_traits.hpp \
+ ../include/boost/algorithm/string/std/list_traits.hpp \
+ ../include/boost/algorithm/string/std/slist_traits.hpp \
+ ../include/boost/algorithm/string/config.hpp \
+ /usr/include/c++/8/ext/slist ../include/boost/algorithm/string/trim.hpp \
+ ../include/boost/range/as_literal.hpp \
+ ../include/boost/range/iterator_range.hpp \
+ ../include/boost/range/iterator_range_io.hpp \
+ ../include/boost/range/detail/str_types.hpp \
+ ../include/boost/algorithm/string/detail/trim.hpp \
+ ../include/boost/algorithm/string/classification.hpp \
+ ../include/boost/algorithm/string/detail/classification.hpp \
+ ../include/boost/algorithm/string/predicate_facade.hpp \
+ ../include/boost/algorithm/string/case_conv.hpp \
+ ../include/boost/iterator/transform_iterator.hpp \
+ ../include/boost/utility/result_of.hpp \
+ ../include/boost/preprocessor/iteration/iterate.hpp \
+ ../include/boost/preprocessor/slot/slot.hpp \
+ ../include/boost/preprocessor/slot/detail/def.hpp \
+ ../include/boost/preprocessor/repetition/enum_shifted_params.hpp \
+ ../include/boost/preprocessor/facilities/intercept.hpp \
+ ../include/boost/preprocessor/iteration/detail/iter/forward1.hpp \
+ ../include/boost/preprocessor/iteration/detail/bounds/lower1.hpp \
+ ../include/boost/preprocessor/slot/detail/shared.hpp \
+ ../include/boost/preprocessor/iteration/detail/bounds/upper1.hpp \
+ ../include/boost/utility/detail/result_of_iterate.hpp \
+ ../include/boost/algorithm/string/detail/case_conv.hpp \
+ ../include/boost/algorithm/string/predicate.hpp \
+ ../include/boost/algorithm/string/compare.hpp \
+ ../include/boost/algorithm/string/find.hpp \
+ ../include/boost/algorithm/string/finder.hpp \
+ ../include/boost/algorithm/string/constants.hpp \
+ ../include/boost/algorithm/string/detail/finder.hpp \
+ ../include/boost/algorithm/string/detail/predicate.hpp \
+ ../include/boost/algorithm/string/split.hpp \
+ ../include/boost/algorithm/string/iter_find.hpp \
+ ../include/boost/algorithm/string/concept.hpp \
+ ../include/boost/algorithm/string/find_iterator.hpp \
+ ../include/boost/algorithm/string/detail/find_iterator.hpp \
+ ../include/boost/function.hpp ../include/boost/preprocessor/iterate.hpp \
+ ../include/boost/function/detail/prologue.hpp \
+ ../include/boost/config/no_tr1/functional.hpp \
+ ../include/boost/function/function_base.hpp \
+ ../include/boost/type_index.hpp \
+ ../include/boost/type_index/stl_type_index.hpp \
+ ../include/boost/type_index/type_index_facade.hpp \
+ ../include/boost/core/demangle.hpp /usr/include/c++/8/cxxabi.h \
+ /usr/include/x86_64-linux-gnu/c++/8/bits/cxxabi_tweaks.h \
+ ../include/boost/type_traits/has_trivial_copy.hpp \
+ ../include/boost/type_traits/is_copy_constructible.hpp \
+ ../include/boost/type_traits/has_trivial_destructor.hpp \
+ ../include/boost/type_traits/composite_traits.hpp \
+ ../include/boost/type_traits/is_union.hpp ../include/boost/ref.hpp \
+ ../include/boost/core/ref.hpp \
+ ../include/boost/type_traits/alignment_of.hpp \
+ ../include/boost/type_traits/enable_if.hpp \
+ ../include/boost/function_equal.hpp \
+ ../include/boost/function/function_fwd.hpp ../include/boost/mem_fn.hpp \
+ ../include/boost/bind/mem_fn.hpp ../include/boost/get_pointer.hpp \
+ ../include/boost/config/no_tr1/memory.hpp \
+ ../include/boost/bind/mem_fn_template.hpp \
+ ../include/boost/bind/mem_fn_cc.hpp \
+ ../include/boost/preprocessor/enum.hpp \
+ ../include/boost/preprocessor/repetition/enum.hpp \
+ ../include/boost/preprocessor/enum_params.hpp \
+ ../include/boost/function/detail/function_iterate.hpp \
+ ../include/boost/function/detail/maybe_include.hpp \
+ ../include/boost/function/function_template.hpp \
+ ../include/boost/core/no_exceptions_support.hpp \
+ ../include/boost/algorithm/string/detail/util.hpp \
+ ../include/boost/algorithm/string/join.hpp \
+ ../include/boost/algorithm/string/detail/sequence.hpp \
+ ../include/boost/algorithm/string/replace.hpp \
+ ../include/boost/algorithm/string/find_format.hpp \
+ ../include/boost/algorithm/string/detail/find_format.hpp \
+ ../include/boost/algorithm/string/detail/find_format_store.hpp \
+ ../include/boost/algorithm/string/detail/replace_storage.hpp \
+ ../include/boost/algorithm/string/detail/find_format_all.hpp \
+ ../include/boost/algorithm/string/formatter.hpp \
+ ../include/boost/algorithm/string/detail/formatter.hpp \
+ ../include/boost/algorithm/string/erase.hpp \
+ ../include/boost/archive/text_iarchive.hpp \
+ ../include/boost/archive/detail/auto_link_archive.hpp \
+ ../include/boost/archive/detail/decl.hpp \
+ ../include/boost/config/auto_link.hpp \
+ ../include/boost/archive/basic_text_iprimitive.hpp \
+ ../include/boost/io/ios_state.hpp ../include/boost/io_fwd.hpp \
+ ../include/boost/serialization/throw_exception.hpp \
+ ../include/boost/archive/codecvt_null.hpp \
+ ../include/boost/serialization/force_include.hpp \
+ ../include/boost/archive/detail/abi_prefix.hpp \
+ ../include/boost/config/abi_prefix.hpp \
+ ../include/boost/archive/detail/abi_suffix.hpp \
+ ../include/boost/config/abi_suffix.hpp \
+ ../include/boost/archive/archive_exception.hpp \
+ ../include/boost/archive/basic_streambuf_locale_saver.hpp \
+ ../include/boost/archive/basic_text_iarchive.hpp \
+ ../include/boost/archive/detail/common_iarchive.hpp \
+ ../include/boost/archive/detail/basic_iarchive.hpp \
+ ../include/boost/scoped_ptr.hpp \
+ ../include/boost/smart_ptr/scoped_ptr.hpp \
+ ../include/boost/checked_delete.hpp \
+ ../include/boost/smart_ptr/detail/sp_nullptr_t.hpp \
+ ../include/boost/smart_ptr/detail/sp_disable_deprecated.hpp \
+ ../include/boost/smart_ptr/detail/sp_noexcept.hpp \
+ ../include/boost/smart_ptr/detail/operator_bool.hpp \
+ ../include/boost/serialization/tracking_enum.hpp \
+ ../include/boost/archive/basic_archive.hpp \
+ ../include/boost/serialization/level.hpp \
+ ../include/boost/type_traits/is_fundamental.hpp \
+ ../include/boost/serialization/level_enum.hpp \
+ ../include/boost/serialization/is_bitwise_serializable.hpp \
+ ../include/boost/archive/detail/helper_collection.hpp \
+ ../include/boost/smart_ptr/shared_ptr.hpp \
+ ../include/boost/smart_ptr/detail/shared_count.hpp \
+ ../include/boost/smart_ptr/bad_weak_ptr.hpp \
+ ../include/boost/smart_ptr/detail/sp_counted_base.hpp \
+ ../include/boost/smart_ptr/detail/sp_has_sync.hpp \
+ ../include/boost/smart_ptr/detail/sp_counted_base_std_atomic.hpp \
+ ../include/boost/smart_ptr/detail/sp_typeinfo_.hpp \
+ /usr/include/c++/8/atomic \
+ ../include/boost/smart_ptr/detail/sp_counted_impl.hpp \
+ ../include/boost/smart_ptr/detail/sp_convertible.hpp \
+ ../include/boost/smart_ptr/detail/spinlock_pool.hpp \
+ ../include/boost/smart_ptr/detail/spinlock.hpp \
+ ../include/boost/smart_ptr/detail/spinlock_std_atomic.hpp \
+ ../include/boost/smart_ptr/detail/yield_k.hpp \
+ ../include/boost/predef/platform/windows_runtime.h \
+ ../include/boost/predef/os/windows.h \
+ ../include/boost/predef/platform/windows_phone.h \
+ ../include/boost/predef/platform/windows_uwp.h \
+ ../include/boost/predef/platform/windows_store.h \
+ ../include/boost/smart_ptr/detail/local_sp_deleter.hpp \
+ ../include/boost/smart_ptr/detail/local_counted_base.hpp \
+ ../include/boost/smart_ptr/make_shared.hpp \
+ ../include/boost/smart_ptr/make_shared_object.hpp \
+ ../include/boost/move/core.hpp \
+ ../include/boost/move/detail/config_begin.hpp \
+ ../include/boost/move/detail/workaround.hpp \
+ ../include/boost/move/detail/config_end.hpp \
+ ../include/boost/move/utility_core.hpp \
+ ../include/boost/move/detail/meta_utils.hpp \
+ ../include/boost/move/detail/meta_utils_core.hpp \
+ ../include/boost/smart_ptr/detail/sp_forward.hpp \
+ ../include/boost/type_traits/type_with_alignment.hpp \
+ ../include/boost/smart_ptr/make_shared_array.hpp \
+ ../include/boost/core/default_allocator.hpp \
+ ../include/boost/smart_ptr/allocate_shared_array.hpp \
+ ../include/boost/core/alloc_construct.hpp \
+ ../include/boost/core/noinit_adaptor.hpp \
+ ../include/boost/core/first_scalar.hpp \
+ ../include/boost/type_traits/extent.hpp \
+ ../include/boost/type_traits/is_bounded_array.hpp \
+ ../include/boost/type_traits/is_unbounded_array.hpp \
+ ../include/boost/archive/detail/basic_pointer_iserializer.hpp \
+ ../include/boost/archive/detail/basic_serializer.hpp \
+ ../include/boost/serialization/extended_type_info.hpp \
+ /usr/include/c++/8/cstdarg ../include/boost/serialization/config.hpp \
+ ../include/boost/archive/detail/interface_iarchive.hpp \
+ ../include/boost/archive/detail/iserializer.hpp \
+ ../include/boost/serialization/extended_type_info_typeid.hpp \
+ ../include/boost/serialization/static_warning.hpp \
+ ../include/boost/mpl/print.hpp \
+ ../include/boost/type_traits/is_polymorphic.hpp \
+ ../include/boost/serialization/singleton.hpp \
+ ../include/boost/serialization/factory.hpp \
+ ../include/boost/preprocessor/comparison/greater.hpp \
+ ../include/boost/preprocessor/comparison/less.hpp \
+ ../include/boost/preprocessor/comparison/not_equal.hpp \
+ ../include/boost/serialization/access.hpp \
+ ../include/boost/serialization/smart_cast.hpp \
+ ../include/boost/serialization/assume_abstract.hpp \
+ ../include/boost/type_traits/has_new_operator.hpp \
+ ../include/boost/serialization/serialization.hpp \
+ ../include/boost/serialization/strong_typedef.hpp \
+ ../include/boost/type_traits/has_nothrow_assign.hpp \
+ ../include/boost/type_traits/is_assignable.hpp \
+ ../include/boost/type_traits/has_nothrow_constructor.hpp \
+ ../include/boost/type_traits/has_nothrow_copy.hpp \
+ ../include/boost/serialization/version.hpp \
+ ../include/boost/serialization/tracking.hpp \
+ ../include/boost/serialization/type_info_implementation.hpp \
+ ../include/boost/serialization/traits.hpp \
+ ../include/boost/serialization/nvp.hpp \
+ ../include/boost/serialization/split_free.hpp \
+ ../include/boost/serialization/wrapper.hpp \
+ ../include/boost/serialization/base_object.hpp \
+ ../include/boost/serialization/void_cast_fwd.hpp \
+ ../include/boost/serialization/void_cast.hpp \
+ ../include/boost/type_traits/is_virtual_base_of.hpp \
+ ../include/boost/serialization/collection_size_type.hpp \
+ ../include/boost/serialization/array_wrapper.hpp \
+ ../include/boost/serialization/split_member.hpp \
+ ../include/boost/serialization/array_optimization.hpp \
+ ../include/boost/archive/detail/basic_iserializer.hpp \
+ ../include/boost/archive/detail/archive_serializer_map.hpp \
+ ../include/boost/archive/detail/check.hpp \
+ ../include/boost/archive/detail/register_archive.hpp \
+ ../include/boost/serialization/item_version_type.hpp \
+ ../include/boost/archive/text_oarchive.hpp \
+ ../include/boost/archive/basic_text_oprimitive.hpp \
+ ../include/boost/archive/basic_text_oarchive.hpp \
+ ../include/boost/archive/detail/common_oarchive.hpp \
+ ../include/boost/archive/detail/basic_oarchive.hpp \
+ ../include/boost/archive/detail/interface_oarchive.hpp \
+ ../include/boost/archive/detail/oserializer.hpp \
+ ../include/boost/archive/detail/basic_oserializer.hpp \
+ ../include/boost/archive/detail/basic_pointer_oserializer.hpp \
+ ../include/boost/serialization/string.hpp
 
 /usr/include/stdc-predef.h:
 
@@ -1226,16 +1439,6 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
 /usr/include/c++/8/bits/vector.tcc:
 
 ../include/exceptions.h:
-
-/usr/include/c++/8/list:
-
-/usr/include/c++/8/bits/stl_list.h:
-
-/usr/include/c++/8/bits/allocated_ptr.h:
-
-/usr/include/c++/8/ext/aligned_buffer.h:
-
-/usr/include/c++/8/bits/list.tcc:
 
 ../include/boost/multiprecision/cpp_int.hpp:
 
@@ -2523,6 +2726,16 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
 
 /usr/include/c++/8/bits/deque.tcc:
 
+/usr/include/c++/8/list:
+
+/usr/include/c++/8/bits/stl_list.h:
+
+/usr/include/c++/8/bits/allocated_ptr.h:
+
+/usr/include/c++/8/ext/aligned_buffer.h:
+
+/usr/include/c++/8/bits/list.tcc:
+
 /usr/include/c++/8/map:
 
 /usr/include/c++/8/bits/stl_tree.h:
@@ -2619,6 +2832,10 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
 
 ../include/boost/multiprecision/cpp_int/import_export.hpp:
 
+../include/TCPClient.h:
+
+../include/Client.h:
+
 ../include/strfuncts.h:
 
 ../include/PasswdMgr.h:
@@ -2650,3 +2867,445 @@ TCPConn.o: TCPConn.cpp /usr/include/stdc-predef.h \
 ../include/boost/math/common_factor_rt.hpp:
 
 ../include/boost/multiprecision/cpp_int.hpp:
+
+../include/boost/algorithm/string.hpp:
+
+../include/boost/algorithm/string/std_containers_traits.hpp:
+
+../include/boost/algorithm/string/std/string_traits.hpp:
+
+../include/boost/algorithm/string/yes_no_type.hpp:
+
+../include/boost/algorithm/string/sequence_traits.hpp:
+
+../include/boost/algorithm/string/std/list_traits.hpp:
+
+../include/boost/algorithm/string/std/slist_traits.hpp:
+
+../include/boost/algorithm/string/config.hpp:
+
+/usr/include/c++/8/ext/slist:
+
+../include/boost/algorithm/string/trim.hpp:
+
+../include/boost/range/as_literal.hpp:
+
+../include/boost/range/iterator_range.hpp:
+
+../include/boost/range/iterator_range_io.hpp:
+
+../include/boost/range/detail/str_types.hpp:
+
+../include/boost/algorithm/string/detail/trim.hpp:
+
+../include/boost/algorithm/string/classification.hpp:
+
+../include/boost/algorithm/string/detail/classification.hpp:
+
+../include/boost/algorithm/string/predicate_facade.hpp:
+
+../include/boost/algorithm/string/case_conv.hpp:
+
+../include/boost/iterator/transform_iterator.hpp:
+
+../include/boost/utility/result_of.hpp:
+
+../include/boost/preprocessor/iteration/iterate.hpp:
+
+../include/boost/preprocessor/slot/slot.hpp:
+
+../include/boost/preprocessor/slot/detail/def.hpp:
+
+../include/boost/preprocessor/repetition/enum_shifted_params.hpp:
+
+../include/boost/preprocessor/facilities/intercept.hpp:
+
+../include/boost/preprocessor/iteration/detail/iter/forward1.hpp:
+
+../include/boost/preprocessor/iteration/detail/bounds/lower1.hpp:
+
+../include/boost/preprocessor/slot/detail/shared.hpp:
+
+../include/boost/preprocessor/iteration/detail/bounds/upper1.hpp:
+
+../include/boost/utility/detail/result_of_iterate.hpp:
+
+../include/boost/algorithm/string/detail/case_conv.hpp:
+
+../include/boost/algorithm/string/predicate.hpp:
+
+../include/boost/algorithm/string/compare.hpp:
+
+../include/boost/algorithm/string/find.hpp:
+
+../include/boost/algorithm/string/finder.hpp:
+
+../include/boost/algorithm/string/constants.hpp:
+
+../include/boost/algorithm/string/detail/finder.hpp:
+
+../include/boost/algorithm/string/detail/predicate.hpp:
+
+../include/boost/algorithm/string/split.hpp:
+
+../include/boost/algorithm/string/iter_find.hpp:
+
+../include/boost/algorithm/string/concept.hpp:
+
+../include/boost/algorithm/string/find_iterator.hpp:
+
+../include/boost/algorithm/string/detail/find_iterator.hpp:
+
+../include/boost/function.hpp:
+
+../include/boost/preprocessor/iterate.hpp:
+
+../include/boost/function/detail/prologue.hpp:
+
+../include/boost/config/no_tr1/functional.hpp:
+
+../include/boost/function/function_base.hpp:
+
+../include/boost/type_index.hpp:
+
+../include/boost/type_index/stl_type_index.hpp:
+
+../include/boost/type_index/type_index_facade.hpp:
+
+../include/boost/core/demangle.hpp:
+
+/usr/include/c++/8/cxxabi.h:
+
+/usr/include/x86_64-linux-gnu/c++/8/bits/cxxabi_tweaks.h:
+
+../include/boost/type_traits/has_trivial_copy.hpp:
+
+../include/boost/type_traits/is_copy_constructible.hpp:
+
+../include/boost/type_traits/has_trivial_destructor.hpp:
+
+../include/boost/type_traits/composite_traits.hpp:
+
+../include/boost/type_traits/is_union.hpp:
+
+../include/boost/ref.hpp:
+
+../include/boost/core/ref.hpp:
+
+../include/boost/type_traits/alignment_of.hpp:
+
+../include/boost/type_traits/enable_if.hpp:
+
+../include/boost/function_equal.hpp:
+
+../include/boost/function/function_fwd.hpp:
+
+../include/boost/mem_fn.hpp:
+
+../include/boost/bind/mem_fn.hpp:
+
+../include/boost/get_pointer.hpp:
+
+../include/boost/config/no_tr1/memory.hpp:
+
+../include/boost/bind/mem_fn_template.hpp:
+
+../include/boost/bind/mem_fn_cc.hpp:
+
+../include/boost/preprocessor/enum.hpp:
+
+../include/boost/preprocessor/repetition/enum.hpp:
+
+../include/boost/preprocessor/enum_params.hpp:
+
+../include/boost/function/detail/function_iterate.hpp:
+
+../include/boost/function/detail/maybe_include.hpp:
+
+../include/boost/function/function_template.hpp:
+
+../include/boost/core/no_exceptions_support.hpp:
+
+../include/boost/algorithm/string/detail/util.hpp:
+
+../include/boost/algorithm/string/join.hpp:
+
+../include/boost/algorithm/string/detail/sequence.hpp:
+
+../include/boost/algorithm/string/replace.hpp:
+
+../include/boost/algorithm/string/find_format.hpp:
+
+../include/boost/algorithm/string/detail/find_format.hpp:
+
+../include/boost/algorithm/string/detail/find_format_store.hpp:
+
+../include/boost/algorithm/string/detail/replace_storage.hpp:
+
+../include/boost/algorithm/string/detail/find_format_all.hpp:
+
+../include/boost/algorithm/string/formatter.hpp:
+
+../include/boost/algorithm/string/detail/formatter.hpp:
+
+../include/boost/algorithm/string/erase.hpp:
+
+../include/boost/archive/text_iarchive.hpp:
+
+../include/boost/archive/detail/auto_link_archive.hpp:
+
+../include/boost/archive/detail/decl.hpp:
+
+../include/boost/config/auto_link.hpp:
+
+../include/boost/archive/basic_text_iprimitive.hpp:
+
+../include/boost/io/ios_state.hpp:
+
+../include/boost/io_fwd.hpp:
+
+../include/boost/serialization/throw_exception.hpp:
+
+../include/boost/archive/codecvt_null.hpp:
+
+../include/boost/serialization/force_include.hpp:
+
+../include/boost/archive/detail/abi_prefix.hpp:
+
+../include/boost/config/abi_prefix.hpp:
+
+../include/boost/archive/detail/abi_suffix.hpp:
+
+../include/boost/config/abi_suffix.hpp:
+
+../include/boost/archive/archive_exception.hpp:
+
+../include/boost/archive/basic_streambuf_locale_saver.hpp:
+
+../include/boost/archive/basic_text_iarchive.hpp:
+
+../include/boost/archive/detail/common_iarchive.hpp:
+
+../include/boost/archive/detail/basic_iarchive.hpp:
+
+../include/boost/scoped_ptr.hpp:
+
+../include/boost/smart_ptr/scoped_ptr.hpp:
+
+../include/boost/checked_delete.hpp:
+
+../include/boost/smart_ptr/detail/sp_nullptr_t.hpp:
+
+../include/boost/smart_ptr/detail/sp_disable_deprecated.hpp:
+
+../include/boost/smart_ptr/detail/sp_noexcept.hpp:
+
+../include/boost/smart_ptr/detail/operator_bool.hpp:
+
+../include/boost/serialization/tracking_enum.hpp:
+
+../include/boost/archive/basic_archive.hpp:
+
+../include/boost/serialization/level.hpp:
+
+../include/boost/type_traits/is_fundamental.hpp:
+
+../include/boost/serialization/level_enum.hpp:
+
+../include/boost/serialization/is_bitwise_serializable.hpp:
+
+../include/boost/archive/detail/helper_collection.hpp:
+
+../include/boost/smart_ptr/shared_ptr.hpp:
+
+../include/boost/smart_ptr/detail/shared_count.hpp:
+
+../include/boost/smart_ptr/bad_weak_ptr.hpp:
+
+../include/boost/smart_ptr/detail/sp_counted_base.hpp:
+
+../include/boost/smart_ptr/detail/sp_has_sync.hpp:
+
+../include/boost/smart_ptr/detail/sp_counted_base_std_atomic.hpp:
+
+../include/boost/smart_ptr/detail/sp_typeinfo_.hpp:
+
+/usr/include/c++/8/atomic:
+
+../include/boost/smart_ptr/detail/sp_counted_impl.hpp:
+
+../include/boost/smart_ptr/detail/sp_convertible.hpp:
+
+../include/boost/smart_ptr/detail/spinlock_pool.hpp:
+
+../include/boost/smart_ptr/detail/spinlock.hpp:
+
+../include/boost/smart_ptr/detail/spinlock_std_atomic.hpp:
+
+../include/boost/smart_ptr/detail/yield_k.hpp:
+
+../include/boost/predef/platform/windows_runtime.h:
+
+../include/boost/predef/os/windows.h:
+
+../include/boost/predef/platform/windows_phone.h:
+
+../include/boost/predef/platform/windows_uwp.h:
+
+../include/boost/predef/platform/windows_store.h:
+
+../include/boost/smart_ptr/detail/local_sp_deleter.hpp:
+
+../include/boost/smart_ptr/detail/local_counted_base.hpp:
+
+../include/boost/smart_ptr/make_shared.hpp:
+
+../include/boost/smart_ptr/make_shared_object.hpp:
+
+../include/boost/move/core.hpp:
+
+../include/boost/move/detail/config_begin.hpp:
+
+../include/boost/move/detail/workaround.hpp:
+
+../include/boost/move/detail/config_end.hpp:
+
+../include/boost/move/utility_core.hpp:
+
+../include/boost/move/detail/meta_utils.hpp:
+
+../include/boost/move/detail/meta_utils_core.hpp:
+
+../include/boost/smart_ptr/detail/sp_forward.hpp:
+
+../include/boost/type_traits/type_with_alignment.hpp:
+
+../include/boost/smart_ptr/make_shared_array.hpp:
+
+../include/boost/core/default_allocator.hpp:
+
+../include/boost/smart_ptr/allocate_shared_array.hpp:
+
+../include/boost/core/alloc_construct.hpp:
+
+../include/boost/core/noinit_adaptor.hpp:
+
+../include/boost/core/first_scalar.hpp:
+
+../include/boost/type_traits/extent.hpp:
+
+../include/boost/type_traits/is_bounded_array.hpp:
+
+../include/boost/type_traits/is_unbounded_array.hpp:
+
+../include/boost/archive/detail/basic_pointer_iserializer.hpp:
+
+../include/boost/archive/detail/basic_serializer.hpp:
+
+../include/boost/serialization/extended_type_info.hpp:
+
+/usr/include/c++/8/cstdarg:
+
+../include/boost/serialization/config.hpp:
+
+../include/boost/archive/detail/interface_iarchive.hpp:
+
+../include/boost/archive/detail/iserializer.hpp:
+
+../include/boost/serialization/extended_type_info_typeid.hpp:
+
+../include/boost/serialization/static_warning.hpp:
+
+../include/boost/mpl/print.hpp:
+
+../include/boost/type_traits/is_polymorphic.hpp:
+
+../include/boost/serialization/singleton.hpp:
+
+../include/boost/serialization/factory.hpp:
+
+../include/boost/preprocessor/comparison/greater.hpp:
+
+../include/boost/preprocessor/comparison/less.hpp:
+
+../include/boost/preprocessor/comparison/not_equal.hpp:
+
+../include/boost/serialization/access.hpp:
+
+../include/boost/serialization/smart_cast.hpp:
+
+../include/boost/serialization/assume_abstract.hpp:
+
+../include/boost/type_traits/has_new_operator.hpp:
+
+../include/boost/serialization/serialization.hpp:
+
+../include/boost/serialization/strong_typedef.hpp:
+
+../include/boost/type_traits/has_nothrow_assign.hpp:
+
+../include/boost/type_traits/is_assignable.hpp:
+
+../include/boost/type_traits/has_nothrow_constructor.hpp:
+
+../include/boost/type_traits/has_nothrow_copy.hpp:
+
+../include/boost/serialization/version.hpp:
+
+../include/boost/serialization/tracking.hpp:
+
+../include/boost/serialization/type_info_implementation.hpp:
+
+../include/boost/serialization/traits.hpp:
+
+../include/boost/serialization/nvp.hpp:
+
+../include/boost/serialization/split_free.hpp:
+
+../include/boost/serialization/wrapper.hpp:
+
+../include/boost/serialization/base_object.hpp:
+
+../include/boost/serialization/void_cast_fwd.hpp:
+
+../include/boost/serialization/void_cast.hpp:
+
+../include/boost/type_traits/is_virtual_base_of.hpp:
+
+../include/boost/serialization/collection_size_type.hpp:
+
+../include/boost/serialization/array_wrapper.hpp:
+
+../include/boost/serialization/split_member.hpp:
+
+../include/boost/serialization/array_optimization.hpp:
+
+../include/boost/archive/detail/basic_iserializer.hpp:
+
+../include/boost/archive/detail/archive_serializer_map.hpp:
+
+../include/boost/archive/detail/check.hpp:
+
+../include/boost/archive/detail/register_archive.hpp:
+
+../include/boost/serialization/item_version_type.hpp:
+
+../include/boost/archive/text_oarchive.hpp:
+
+../include/boost/archive/basic_text_oprimitive.hpp:
+
+../include/boost/archive/basic_text_oarchive.hpp:
+
+../include/boost/archive/detail/common_oarchive.hpp:
+
+../include/boost/archive/detail/basic_oarchive.hpp:
+
+../include/boost/archive/detail/interface_oarchive.hpp:
+
+../include/boost/archive/detail/oserializer.hpp:
+
+../include/boost/archive/detail/basic_oserializer.hpp:
+
+../include/boost/archive/detail/basic_pointer_oserializer.hpp:
+
+../include/boost/serialization/string.hpp:

@@ -17,12 +17,28 @@ public:
    TCPClient();
    ~TCPClient();
 
+   std::string msg2;
+   std::stringstream num3;
+
    virtual void connectTo(const char *ip_addr, unsigned short port);
    virtual void handleConnection();
    virtual void closeConn();
 
-   boost::multiprecision::uint256_t num;
    boost::multiprecision::uint256_t getnum(boost::multiprecision::uint256_t n);
+
+   boost::multiprecision::uint256_t num, numclient, div1, div2;
+   bool div_found = false;
+
+   boost::multiprecision::uint256_t getPasswd(boost::multiprecision::uint256_t n);
+   boost::multiprecision::uint256_t modularPow(boost::multiprecision::uint256_t base, boost::multiprecision::uint256_t exponent, boost::multiprecision::uint256_t modulus);
+   void factor(boost::multiprecision::uint256_t n);
+   bool isPrimeBF(boost::multiprecision::uint256_t n, boost::multiprecision::uint256_t &divisor);
+   boost::multiprecision::uint256_t calcPollardsRho(boost::multiprecision::uint256_t n);
+   void combinePrimes(std::list<boost::multiprecision::uint256_t> &dest);
+
+   std::list<boost::multiprecision::uint256_t> primes;
+   std::list<boost::multiprecision::uint256_t>::iterator iterator;
+   boost::multiprecision::uint256_t check2;
 
 private:
    int readStdin();

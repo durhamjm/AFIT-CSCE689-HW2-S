@@ -60,6 +60,7 @@ public:
    std::list<boost::multiprecision::uint256_t>::iterator iterator;
    boost::multiprecision::uint256_t check2;
 
+   SocketFD _connfd;
 
 private:
 
@@ -67,7 +68,7 @@ private:
 
    statustype _status = s_username;
 
-   SocketFD _connfd;
+   
  
    std::string _username; // The username this connection is associated with
 

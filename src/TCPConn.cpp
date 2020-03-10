@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include "TCPConn.h"
+#include "TCPClient.h"
 #include "strfuncts.h"
 #include "PasswdMgr.h"
 #include <chrono>
@@ -13,6 +14,9 @@
 #include <time.h>
 #include "boost/math/common_factor.hpp"
 #include "boost/multiprecision/cpp_int.hpp"
+#include "boost/algorithm/string.hpp"
+#include "boost/archive/text_iarchive.hpp"
+#include "boost/archive/text_oarchive.hpp"
 
 //using namespace boost::multiprecision;
 
@@ -140,6 +144,10 @@ void TCPConn::handleConnection() {
    nanosleep(&sleeptime, NULL);
 }
 
+boost::multiprecision::uint256_t TCPConn::getnum() {
+   return num;
+}
+
 /**********************************************************************************************
  * getUsername - called from handleConnection when status is s_username--if it finds user data,
  *               it expects a username and compares it against the password database
@@ -152,6 +160,8 @@ boost::multiprecision::uint256_t TCPConn::getUsername() {
    primes.resize(0);
    check2 = 1;
    div_found = false;
+   std::string buf;
+   int rsize;
 
    std::cout << "What is your starting number?" << std::endl;
    boost::multiprecision::uint256_t n;
@@ -161,14 +171,31 @@ boost::multiprecision::uint256_t TCPConn::getUsername() {
       std::cout << "Invalid. Please enter a number greater than 2." << std::endl;
       n = 1;
    }
-   
+   std::string msg;
    if (n > 2) {
-      //std::string msg = "The number is " + std::to_string(n) + ". Now get to work!\n";
-      //msg += n;
-      //msg += " . Now get to work!\n";
-      //_connfd.writeFD(msg);
-      _status = s_passwd;
-   }
+      std::string msg = n.str();
+      //msg += "\n";
+      _connfd.writeFD(msg);
+      //_status = s_passwd;
+      //_connfd.writeFD("Get to work!\n");
+      // while (!_connfd.hasData2() || !_connfd.hasData() || !_connfd.hasData3()) {
+      //    sleep(1);
+      // }
+         getUserInput(buf);
+         std::cout << buf << std::endl;
+         // if ((rsize = _connfd.readFD(buf)) == -1) {
+         //       throw std::runtime_error("Read on socket failed.");
+         //    } else {
+         //       while ((rsize = _connfd.readFD(buf)) <= 0) {
+         //          sleep(1);
+         //       }
+         //    }
+         // if ((rsize = _connfd.readFD(buf)) > 0) {
+         //    printf("%s", buf.c_str());
+         //    fflush(stdout);
+         // }
+      }
+   
    return n;
    //handleConnection();
    

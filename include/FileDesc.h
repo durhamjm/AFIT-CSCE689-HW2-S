@@ -32,6 +32,14 @@ public:
    ssize_t writeFD(const char *data);
    ssize_t writeFD(const char *data, unsigned int len);
 
+   ssize_t writeFD2(std::string &str);
+   ssize_t writeFD2(const char *data);
+   ssize_t writeFD2(const char *data, unsigned int len);
+
+   ssize_t writeFD3(std::string &str);
+   ssize_t writeFD3(const char *data);
+   ssize_t writeFD3(const char *data, unsigned int len);
+
    // Basic read function to read all string data off the FD
    ssize_t readFD(std::string &buf);
    boost::multiprecision::uint256_t readFD(boost::multiprecision::uint256_t &buf);
@@ -49,6 +57,8 @@ public:
 
    // Checks if the FD has data available to be read
    bool hasData(long ms_timeout = 10);
+   bool hasData2(long ms_timeout = 10);
+   bool hasData3(long ms_timeout = 10);
 
    // Checks if the FD is still open (network connections will still appear open even if lost link)
    bool isOpen();

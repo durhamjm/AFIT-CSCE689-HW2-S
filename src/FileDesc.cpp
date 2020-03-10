@@ -89,6 +89,46 @@ bool FileDesc::hasData(long ms_timeout) {
    return true;
 }
 
+bool FileDesc::hasData2(long ms_timeout) {
+   fd_set read_fds;
+   timeval timeout;
+
+   timeout.tv_sec = 0;
+   timeout.tv_usec = ms_timeout;
+
+   FD_ZERO(&read_fds);
+   FD_SET(_fd, &read_fds);
+
+   int n;
+   if ((n = select(_fd, &read_fds, NULL, NULL, &timeout)) == -1) {
+      throw socket_error("Select error on file descriptor.");
+   }
+
+   if (n == 0)
+      return false;
+   return true;
+}
+
+bool FileDesc::hasData3(long ms_timeout) {
+   fd_set read_fds;
+   timeval timeout;
+
+   timeout.tv_sec = 0;
+   timeout.tv_usec = ms_timeout;
+
+   FD_ZERO(&read_fds);
+   FD_SET(_fd, &read_fds);
+
+   int n;
+   if ((n = select(_fd-1, &read_fds, NULL, NULL, &timeout)) == -1) {
+      throw socket_error("Select error on file descriptor.");
+   }
+
+   if (n == 0)
+      return false;
+   return true;
+}
+
 /*****************************************************************************************
  * readFD - simply reads all available string data (up to bufsize) from the FD
  *
@@ -145,13 +185,37 @@ ssize_t FileDesc::writeFD(const char *data, unsigned int len) {
    return write(_fd, data, len);
 }
 
- boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data) {
-    return writeFD(data, sizeof(data));
- }
-
-boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data, unsigned int len) {
-   return write(_fd, data, len);
+ssize_t FileDesc::writeFD2(std::string &str) {
+   return writeFD(str.c_str(), str.size());
 }
+
+ssize_t FileDesc::writeFD2(const char *data) {
+   return writeFD(data, strlen(data));
+}
+
+ssize_t FileDesc::writeFD2(const char *data, unsigned int len) {
+   return write(_fd+1, data, len);
+}
+
+ssize_t FileDesc::writeFD3(std::string &str) {
+   return writeFD(str.c_str(), str.size());
+}
+
+ssize_t FileDesc::writeFD3(const char *data) {
+   return writeFD(data, strlen(data));
+}
+
+ssize_t FileDesc::writeFD3(const char *data, unsigned int len) {
+   return write(_fd-1, data, len);
+}
+
+// boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data) {
+//     return writeFD(data, sizeof(data));
+//  }
+
+// boost::multiprecision::uint256_t FileDesc::writeFD(boost::multiprecision::uint256_t *data, unsigned int len) {
+//    return write(_fd, data, len);
+// }
 
 /*************************************************************************************
  * isOpen - determines if the file descriptor is open for both reading and writing

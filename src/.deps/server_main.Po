@@ -179,9 +179,9 @@ server_main.o: server_main.cpp /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/unistd.h ../include/exceptions.h \
- ../include/TCPConn.h ../include/boost/multiprecision/cpp_int.hpp \
- /usr/include/c++/8/iomanip /usr/include/c++/8/locale \
- /usr/include/c++/8/bits/locale_facets_nonio.h /usr/include/c++/8/ctime \
+ ../include/boost/multiprecision/cpp_int.hpp /usr/include/c++/8/iomanip \
+ /usr/include/c++/8/locale /usr/include/c++/8/bits/locale_facets_nonio.h \
+ /usr/include/c++/8/ctime \
  /usr/include/x86_64-linux-gnu/c++/8/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/8/bits/messages_members.h \
  /usr/include/libintl.h /usr/include/c++/8/bits/codecvt.h \
@@ -785,7 +785,7 @@ server_main.o: server_main.cpp /usr/include/stdc-predef.h \
  ../include/boost/multiprecision/cpp_int/literals.hpp \
  ../include/boost/multiprecision/cpp_int/serialize.hpp \
  ../include/boost/multiprecision/cpp_int/import_export.hpp \
- ../include/exceptions.h
+ ../include/TCPConn.h ../include/exceptions.h
 
 /usr/include/stdc-predef.h:
 
@@ -1242,8 +1242,6 @@ server_main.o: server_main.cpp /usr/include/stdc-predef.h \
 /usr/include/x86_64-linux-gnu/bits/unistd.h:
 
 ../include/exceptions.h:
-
-../include/TCPConn.h:
 
 ../include/boost/multiprecision/cpp_int.hpp:
 
@@ -2618,5 +2616,7 @@ server_main.o: server_main.cpp /usr/include/stdc-predef.h \
 ../include/boost/multiprecision/cpp_int/serialize.hpp:
 
 ../include/boost/multiprecision/cpp_int/import_export.hpp:
+
+../include/TCPConn.h:
 
 ../include/exceptions.h:
