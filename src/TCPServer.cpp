@@ -82,32 +82,47 @@ void TCPServer::listenSvr() {
          // **Log connection (if/else for whitelist) with IP
 
          // Change this later
-         new_conn->startAuthentication();
+         std::string msg3;
+         new_conn->getUsername(msg3);
       }
 
       // Loop through our connections, handling them
+      std::string msg3;
+      std::list<std::unique_ptr<TCPConn>>::iterator tptr2 = _connlist.begin();
       std::list<std::unique_ptr<TCPConn>>::iterator tptr = _connlist.begin();
       while (tptr != _connlist.end())
       {
          // If the user lost connection
          if (!(*tptr)->isConnected()) {
             // **Log it
-
             // Remove them from the connect list
             tptr = _connlist.erase(tptr);
             std::cout << "Connection disconnected.\n";
             continue;
          }
+         (*tptr)->getUsername(msg3);
+         tptr++;
+
+         // if (tptr == _connlist.end()) {
+         //    tptr--;
+         //    tptr--;
+         // }
+         // (*tptr)->_connfd.writeFD(msg3);
 
          // Process any user inputs
-         (*tptr)->handleConnection();
 
+         // while (tptr2 != _connlist.end()) {
+         //    std::cout << "sending to all\n";
+         //    (*tptr2)->sendNum(msg3);
+         //    tptr2++;
+         // }
+         // tptr2 = _connlist.begin();
          // Increment our iterator
-         tptr++;
+         // tptr++;
       }
 
       // So we're not chewing up CPU cycles unnecessarily
-      nanosleep(&sleeptime, NULL);
+      //nanosleep(&sleeptime, NULL);
    }   
 }
 

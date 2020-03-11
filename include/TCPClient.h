@@ -26,7 +26,7 @@ public:
 
    boost::multiprecision::uint256_t getnum(boost::multiprecision::uint256_t n);
 
-   boost::multiprecision::uint256_t num, numclient, div1, div2;
+   boost::multiprecision::uint256_t num, num2, numclient, div1, div2, newval, newval2;
    bool div_found = false;
 
    boost::multiprecision::uint256_t getPasswd(boost::multiprecision::uint256_t n);
@@ -38,7 +38,7 @@ public:
 
    std::list<boost::multiprecision::uint256_t> primes;
    std::list<boost::multiprecision::uint256_t>::iterator iterator;
-   boost::multiprecision::uint256_t check2;
+   boost::multiprecision::uint256_t check2, check3;
 
 private:
    int readStdin();

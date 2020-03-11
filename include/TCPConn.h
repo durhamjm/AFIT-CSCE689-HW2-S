@@ -19,6 +19,8 @@ public:
 
    int getNumber();
 
+   int connnum = 0;
+
    boost::multiprecision::uint256_t num, numclient, div1, div2;
    bool div_found = false;
 
@@ -29,13 +31,15 @@ public:
 
    void handleConnection();
    void startAuthentication();
-   boost::multiprecision::uint256_t getUsername();
+   boost::multiprecision::uint256_t getUsername(std::string msg3);
    boost::multiprecision::uint256_t getPasswd(boost::multiprecision::uint256_t n);
    void sendMenu();
    void getMenuChoice();
    void setPassword();
    void changePassword();
    
+   std::string msg, filler;
+
    bool getUserInput(std::string &cmd);
 
    void disconnect();
@@ -60,7 +64,11 @@ public:
    std::list<boost::multiprecision::uint256_t>::iterator iterator;
    boost::multiprecision::uint256_t check2;
 
-   SocketFD _connfd;
+   SocketFD _connfd, _connfd2;
+   std::vector<SocketFD> conlist;
+   std::vector<SocketFD>::iterator coniter;
+
+   void sendNum(std::string msgnum);
 
 private:
 

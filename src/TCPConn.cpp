@@ -42,6 +42,7 @@ TCPConn::~TCPConn() {
 
 bool TCPConn::accept(SocketFD &server) {
    return _connfd.acceptFD(server);
+   //conlist.push_back(_connfd);
 }
 
 /**********************************************************************************************
@@ -114,7 +115,7 @@ void TCPConn::handleConnection() {
             //    break;
 
          case s_username:
-            num = getUsername();
+            num = getUsername(filler);
             break;
 
          case s_passwd:
@@ -155,7 +156,7 @@ boost::multiprecision::uint256_t TCPConn::getnum() {
  *    Throws: runtime_error for unrecoverable issues
  **********************************************************************************************/
 
-boost::multiprecision::uint256_t TCPConn::getUsername() {
+boost::multiprecision::uint256_t TCPConn::getUsername(std::string msg3) {
    primes = {};
    primes.resize(0);
    check2 = 1;
@@ -170,12 +171,33 @@ boost::multiprecision::uint256_t TCPConn::getUsername() {
    if (n <= 2) {
       std::cout << "Invalid. Please enter a number greater than 2." << std::endl;
       n = 1;
+      getUsername(msg3);
    }
-   std::string msg;
    if (n > 2) {
-      std::string msg = n.str();
+      msg = n.str();
+      msg3 = msg;
       //msg += "\n";
-      _connfd.writeFD(msg);
+      coniter = conlist.begin(); 
+      // _connfd2 = _connfd;
+      // for (int i = 0; i < conlist.size(); i++) {
+      //    std::cout << "Trying to send" << std::endl;
+      //    _connfd = conlist.at(i);
+         _connfd.writeFD(msg);
+
+      // }
+      // _connfd = _connfd2;
+
+         //    for (int i = 0; i < primes.size(); i++) {
+         //       if (*iterator >= 1) {
+         //          newval2 = newval2 / *iterator;
+         //          std::cout << "List5 size: " << primes.size() << std::endl;
+         //          std::cout << "List5 at " << i << " : " << *iterator << std::endl;
+         //          std::cout << "newval2 = " << newval2 << std::endl;
+         //       }
+         //       std::advance(iterator, 1);
+
+
+
       //_status = s_passwd;
       //_connfd.writeFD("Get to work!\n");
       // while (!_connfd.hasData2() || !_connfd.hasData() || !_connfd.hasData3()) {
@@ -183,6 +205,12 @@ boost::multiprecision::uint256_t TCPConn::getUsername() {
       // }
          getUserInput(buf);
          std::cout << buf << std::endl;
+
+      // while (!_connfd.hasData()) {
+      //    return n;
+      // }
+         
+         
          // if ((rsize = _connfd.readFD(buf)) == -1) {
          //       throw std::runtime_error("Read on socket failed.");
          //    } else {
@@ -236,6 +264,11 @@ boost::multiprecision::uint256_t TCPConn::getUsername() {
  *
  *    Returns: resulting number
  ********************************************************************************************/
+
+void TCPConn::sendNum(std::string msgnum) {
+   _connfd.writeFD(msgnum);
+}
+
 boost::multiprecision::uint256_t TCPConn::modularPow(boost::multiprecision::uint256_t base, boost::multiprecision::uint256_t exponent, boost::multiprecision::uint256_t modulus) {
    boost::multiprecision::uint256_t result = 1;
 
@@ -344,7 +377,7 @@ void TCPConn::factor(boost::multiprecision::uint256_t n) {
    }
    if (div_found) {
       std::cout << "Stop calling me!" << std::endl;
-      num = getUsername();
+      num = getUsername(filler);
    }
    //std::cout << "Factoring: " << n << std::endl;
 
@@ -388,7 +421,7 @@ void TCPConn::factor(boost::multiprecision::uint256_t n) {
                               std::cout << std::endl;
                               _status = s_menu;
                               div_found = true;
-                              num = getUsername();
+                              num = getUsername(filler);
                               std::cout << "Crashing now, don't mind me." << std::endl;
                               //handleConnection();
                               return;
@@ -426,7 +459,7 @@ void TCPConn::factor(boost::multiprecision::uint256_t n) {
                         std::cout << std::endl;
                         _status = s_menu;
                         div_found = true;
-                        num = getUsername();
+                        num = getUsername(filler);
                         std::cout << "Crashing now, don't mind me." << std::endl;
                         return;
                      }
@@ -461,7 +494,7 @@ void TCPConn::factor(boost::multiprecision::uint256_t n) {
       }
       // If d == n, then we re-randomize and continue the search up to the prime check depth
    }
-   num = getUsername();
+   num = getUsername(filler);
    throw std::runtime_error("Reached end of function--this should not have happened.");
    return;
 }
@@ -542,7 +575,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         std::cout << std::endl;
                         _status = s_menu;
                         div_found = true;
-                        num = getUsername();
+                        num = getUsername(filler);
                         return 0;
                         std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;
@@ -585,7 +618,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         std::cout << std::endl;
                         _status = s_menu;
                         div_found = true;
-                        num = getUsername();
+                        num = getUsername(filler);
                         return 0;
                         std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;
@@ -628,7 +661,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         std::cout << std::endl;
                         _status = s_menu;
                         div_found = true;
-                        num = getUsername();
+                        num = getUsername(filler);
                         return 0;
                         std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;

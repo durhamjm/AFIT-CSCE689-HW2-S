@@ -182,7 +182,11 @@ ssize_t FileDesc::writeFD(const char *data) {
 }
 
 ssize_t FileDesc::writeFD(const char *data, unsigned int len) {
+   // return write(_fd-2, data, len);
+   // return write(_fd-1, data, len);
    return write(_fd, data, len);
+   // return write(_fd+1, data, len);
+   // return write(_fd+2, data, len);
 }
 
 ssize_t FileDesc::writeFD2(std::string &str) {

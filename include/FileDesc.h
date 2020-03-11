@@ -167,9 +167,11 @@ public:
    void getIPAddrStr(std::string &buf);
    unsigned short getPort();
 
+   sockaddr_in _fd_addr;
+
 private:
 
-   sockaddr_in _fd_addr;
+   
 
 };
 
