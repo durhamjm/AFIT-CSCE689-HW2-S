@@ -110,22 +110,12 @@ void TCPClient::handleConnection() {
                   getPasswd(num);
                   check3 = 1;
                 }
-               // iterator = primes.begin();
-               // check2 = 1;
-            // }
          }
       }
       // So we're not chewing up CPU cycles unnecessarily
       nanosleep(&sleeptime, NULL);
    }
 }
-
-// boost::multiprecision::uint256_t getnum(boost::multiprecision::uint256_t n) {
-//    num = n;
-//    std::cout << "Number is " << num << ". Now get to work!" << std::endl;
-// }
-
-
 
 boost::multiprecision::uint256_t TCPClient::modularPow(boost::multiprecision::uint256_t base, boost::multiprecision::uint256_t exponent, boost::multiprecision::uint256_t modulus) {
    boost::multiprecision::uint256_t result = 1;
@@ -161,10 +151,7 @@ bool TCPClient::isPrimeBF(boost::multiprecision::uint256_t n, boost::multiprecis
    } else if ((n & 3) == 0) {
       divisor = 3;
       return false;
-   } /* else if ((n % 5) == 0) {
-      divisor = 5;
-      return false;
-   } */
+   } 
 
    // Assumes all primes are to either side of 6k. Using 256 bit to avoid overflow
    // issues when calculating max range
@@ -181,7 +168,6 @@ bool TCPClient::isPrimeBF(boost::multiprecision::uint256_t n, boost::multiprecis
    }
    return true;
 }
-
 
 boost::multiprecision::uint256_t TCPClient::calcPollardsRho(boost::multiprecision::uint256_t n) {
    //std::cout << "Pollards Rho" << std::endl;
@@ -232,24 +218,13 @@ boost::multiprecision::uint256_t TCPClient::calcPollardsRho(boost::multiprecisio
    return d;
 }
 
-
-void TCPClient::combinePrimes(std::list<boost::multiprecision::uint256_t> &dest) {
-   dest.insert(dest.end(), primes.begin(), primes.end());
-}
-
-
 void TCPClient::factor(boost::multiprecision::uint256_t n) {
    // already prime
    if (n == 1) {
       return;
    }
-   // if (div_found) {
-   //    std::cout << "Stop calling me!" << std::endl;
-   //    handleConnection();
-   //    return;
-   // }
-   // std::cout << "Factoring: " << n << std::endl;
 
+   // std::cout << "Factoring: " << n << std::endl;
    
    bool check;
    boost::multiprecision::uint256_t iters = 0;
@@ -262,88 +237,75 @@ void TCPClient::factor(boost::multiprecision::uint256_t n) {
       // iters after the check
       boost::multiprecision::uint256_t primecheck_depth = sqrt(n); 
       if (iters++ <= primecheck_depth && check2 != num2) {
-	   // std::cout << "Pollards rho timed out, checking if the following is prime: " << n << std::endl;
-	   boost::multiprecision::uint256_t divisor = 1;
+         // std::cout << "Pollards rho timed out, checking if the following is prime: " << n << std::endl;
+         boost::multiprecision::uint256_t divisor = 1;
          if (isPrimeBF(n, divisor)) {
-	      std::cout << "Prime found1: " << n << std::endl;
+	         std::cout << "Prime found: " << n << std::endl;
             primes.push_front(n);
             iterator = primes.begin();
             check2 = 1;
             for (int i = 0; i < primes.size(); i++) {
                if (*iterator >= 1) {
                   check2 *= *iterator;
-                     std::cout << "List2 size: " << primes.size() << std::endl;
-                     std::cout << "List2 at " << i << " : " << *iterator << std::endl;
-                     std::cout << "Check2 = " << check2 << std::endl;
+                     // std::cout << "List2 size: " << primes.size() << std::endl;
+                     // std::cout << "List2 at " << i << " : " << *iterator << std::endl;
+                     // std::cout << "Check2 = " << check2 << std::endl;
                }
                std::advance(iterator, 1);
             }
-                  std::cout << "Before add, check is " << check2 << std::endl;
-                  std::cout << "Am I adding " << n << "?" << std::endl;
-                  if (num / check2 % n == 0) {
-                     primes.push_front(n);
-                     std::cout << "Yes" <<std::endl;
-                     num = num / n;
-                  }
+            // std::cout << "Before add, check is " << check2 << std::endl;
+            // std::cout << "Am I adding " << n << "?" << std::endl;
+            // std::cout << "old num2 " << num << std::endl;
+            if ((num / check2) % n == 0) {
+               primes.push_front(n);
+               // std::cout << "Yes" <<std::endl;
+               num = num / n;
+               // std::cout << "new num2 " << num << std::endl;
+            }
 
-                  std::cout << "Now checking the other side" << std::endl;
-                  if (num % check2 == 0) {
-                     div1 = num / check2;
-                     if (isPrimeBF(div1, div2)) {
-                        primes.push_front(div1);
-                        std::cout << "Prime added" << std::endl;
-                     } else {
-                        std::cout << "Trying to factor the divisor" << std::endl;
-                        (factor(div2));
+            // std::cout << "Now checking the other side" << std::endl;
+            if (num % check2 == 0) {
+               div1 = num / check2;
+               if (isPrimeBF(div1, div2)) {
+                  primes.push_front(div1);
+                  // std::cout << "Prime added" << std::endl;
+               } else {
+                  // std::cout << "Trying to factor the divisor" << std::endl;
+                  (factor(div2));
+               }
+            }
+
+            if (check2 == num2) {
+               //std::cout << "Mission complete!1 Primes are: " << std::endl;
+               iterator = primes.begin();
+               check2 = 1;
+               msg2 = "";
+               for (int i = 0; i < primes.size(); i++) {
+                  if (*iterator >= 1) {
+                     num3 << *iterator;
+                     msg2 += num3.str();
+                     num3.str("");
+                     check2 *= *iterator;
+                     if (check2 == num2) {
+                        msg2 += "\n";
+                        _sockfd.writeFD(msg2);
+                        std::cout << msg2;
+                        div_found = true;
+                        primes = {};
+                        primes.resize(0);
+                        //std::cout << "Crashing now, don't mind me." << std::endl;
+                        msg2 = "";
+                        num = 0;
+                        handleConnection();
+                        return;
                      }
                   }
-
-                  if (check2 == num2) {
-                     //std::cout << "Mission complete!1 Primes are: " << std::endl;
-                     iterator = primes.begin();
-                     check2 = 1;
-                     msg2 = "";
-                     for (int i = 0; i < primes.size(); i++) {
-                        if (*iterator >= 1) {
-                           num3 << *iterator;
-                           msg2 += num3.str();
-                           num3.str("");
-                           // _sockfd.writeFD(msg2);
-                           // _sockfd.writeFD2(msg2);
-                           // _sockfd.writeFD3(msg2);
-                           // _sockfd.writeFD(*iterator);
-                           // _sockfd.writeFD(", ");
-                           //std::cout << *iterator << ", ";
-                           check2 *= *iterator;
-                           if (check2 == num2) {
-                              msg2 += "\n";
-                              _sockfd.writeFD(msg2);
-                              std::cout << msg2;
-                              //std::cout << std::endl;
-                              // _status = s_menu;
-                              div_found = true;
-                              //check2 = 1;
-                              primes = {};
-                              primes.resize(0);
-                              //std::cout << "Crashing now, don't mind me." << std::endl;
-                              msg2 = "";
-                              num = 0;
-                              handleConnection();
-                              return;
-                           }
-                        }
-                        std::advance(iterator, 1);
-                        msg2 += ", ";
-                     }
-                  }
-         
-      
-               
-            
-            
-	    //return;
-	 } else {   // We found a prime divisor, save it and keep finding primes
-            std::cout << "Prime found2: " << divisor << std::endl;
+                  std::advance(iterator, 1);
+                  msg2 += ", ";
+               }
+            }
+	      } else {   // We found a prime divisor, save it and keep finding primes
+            std::cout << "Prime found: " << divisor << std::endl;
             //div_found = true;
             // make for loop to check current primes (before write)
             // if found prime is divisible into factored #, we know it's prime
@@ -352,36 +314,23 @@ void TCPClient::factor(boost::multiprecision::uint256_t n) {
             for (int i = 0; i < primes.size(); i++) {
                if (*iterator >= 1) {
                check2 *= *iterator;
-               std::cout << "List7 size: " << primes.size() << std::endl;
-               std::cout << "List7 at " << i << " : " << *iterator << std::endl;
-               std::cout << "Check7 = " << check2 << std::endl;
+               // std::cout << "List7 size: " << primes.size() << std::endl;
+               // std::cout << "List7 at " << i << " : " << *iterator << std::endl;
+               // std::cout << "Check7 = " << check2 << std::endl;
                }
                std::advance(iterator, 1);
             }
             if (check2 != num2) {
-               std::cout << "Before add, check is " << check2 << std::endl;
-               std::cout << "Am I adding " << divisor << "?" << std::endl;
-               std::cout << "num is " << num << std::endl;
+               // std::cout << "Before add, check is " << check2 << std::endl;
+               // std::cout << "Am I adding " << divisor << "?" << std::endl;
+               // std::cout << "num is " << num << std::endl;
                if (num / check2 % divisor == 0) {
                   primes.push_front(divisor);
-                  std::cout << "Yes" <<std::endl;
+                  // std::cout << "Yes" <<std::endl;
                   num = num / divisor;
                }
             }
             
-
-            // iterator = primes.begin();
-            // check2 = 1;
-            // for (int i = 0; i < primes.size(); i++) {
-            //    if (*iterator >= 1) {
-            //       check2 *= *iterator;
-            //       // if (check2 <= num * 10) {
-            //       //    // std::cout << "List3 size: " << primes.size() << std::endl;
-            //       //    //std::cout << "List3 at " << i << " : " << *iterator << std::endl;
-            //       //    // std::cout << "Check3 = " << check2 << std::endl;
-            //       //    // std::cout << "Iteration: " << iters << std::endl;
-            //       // }
-            //       std::advance(iterator, 1);
                   if (check2 == num2) {
                      //std::cout << "Mission complete!2 Primes are: " << std::endl;
                      iterator = primes.begin();
@@ -392,19 +341,11 @@ void TCPClient::factor(boost::multiprecision::uint256_t n) {
                            num3 << *iterator;
                            msg2 += num3.str();
                            num3.str("");
-                           // _sockfd.writeFD(msg2);
-                           // _sockfd.writeFD2(msg2);
-                           // _sockfd.writeFD3(msg2);
-                           // _sockfd.writeFD(*iterator);
-                           // _sockfd.writeFD(", ");
-                           //std::cout << *iterator << ", ";
                            check2 *= *iterator;
                            if (check2 == num2) {
                               msg2 += "\n";
                               _sockfd.writeFD(msg2);
                               std::cout << msg2;
-                              //std::cout << std::endl;
-                              // _status = s_menu;
                               div_found = true;
                               //check2 = 1;
                               primes = {};
@@ -420,69 +361,24 @@ void TCPClient::factor(boost::multiprecision::uint256_t n) {
                         msg2 += ", ";
                      }
                   }
-               // }
-            // }
 
-            std::cout << "Now checking the other side" << std::endl;
+            // std::cout << "Now checking the other side" << std::endl;
             if (num % check2 == 0) {
                div1 = num / check2;
+               // std::cout << "Div1 is " << div1 << std::endl;
                if (isPrimeBF(div1, div2)) {
                   primes.push_front(div1);
-                  std::cout << "Prime added" << std::endl;
+                  // std::cout << "Prime added" << std::endl;
                } else {
-                  std::cout << "Trying to factor the divisor" << std::endl;
+                  // std::cout << "Trying to factor the divisor" << std::endl;
                   (factor(div2));
                }
             }
 
-            // if (check2 != num) {
-            //    // //std::cout << "Third check" << std::endl;
-            //    // // We try to get a divisor using Pollards Rho
-            //    newval2 = num;
-            //    iterator = primes.begin();
-            //    for (int i = 0; i < primes.size(); i++) {
-            //       if (*iterator >= 1) {
-            //          newval2 = newval2 / *iterator;
-            //          std::cout << "List5 size: " << primes.size() << std::endl;
-            //          std::cout << "List5 at " << i << " : " << *iterator << std::endl;
-            //          std::cout << "newval2 = " << newval2 << std::endl;
-            //       }
-            //       std::advance(iterator, 1);
-            //    }
-
-            //    boost::multiprecision::uint256_t d = calcPollardsRho(newval2);
-            //    if (d != n && d != 0 && d != 1) {
-            //       //std::cout << "Divisor found: " << d << std::endl;
-
-            //       // Factor the divisor
-            //       //std::cout << "Factor1" << std::endl;
-            //       factor(d);
-
-            //       // Now the remaining number
-            //       // std::cout << "Factor2" << std::endl;
-            //       factor((boost::multiprecision::uint256_t) (newval2/d));
-            //    }
-            // }
          } // end of else
       } 
    } // end of while
 
-      //std::cout << "Quick check1: " << check2 << std::endl;
-      //  if (check2 != num) {
-      //    //std::cout << "Second check" << std::endl;
-	   //    factor(n / divisor);
-      //    return;
-      //  } 
-    	
-
-      // check2 = 1;
-      // iterator = primes.begin();
-      // for (int i = 0; i < primes.size(); i++) {
-      //    if (*iterator >= 1) {
-      //       newval2 = newval2 / *iterator;
-      //       check2 *= *iterator;
-      //    }
-      // }
       //std::cout << "Quick check2: " << check2 << std::endl;
       if (check2 != num2) {
          // //std::cout << "Third check" << std::endl;
@@ -492,16 +388,16 @@ void TCPClient::factor(boost::multiprecision::uint256_t n) {
          for (int i = 0; i < primes.size(); i++) {
             if (*iterator >= 1) {
                newval2 = newval2 / *iterator;
-               std::cout << "List6 size: " << primes.size() << std::endl;
-               std::cout << "List6 at " << i << " : " << *iterator << std::endl;
-               std::cout << "newval2 = " << newval2 << std::endl;
+               // std::cout << "List6 size: " << primes.size() << std::endl;
+               // std::cout << "List6 at " << i << " : " << *iterator << std::endl;
+               // std::cout << "newval2 = " << newval2 << std::endl;
             }
             std::advance(iterator, 1);
          }
 
          boost::multiprecision::uint256_t d = calcPollardsRho(newval2);
          if (d != num && d != 0 && d != 1) {
-            std::cout << "Divisor found: " << d << std::endl;
+            // std::cout << "Divisor found: " << d << std::endl;
 
             // Factor the divisor
             //std::cout << "Factor1" << std::endl;
@@ -563,26 +459,16 @@ boost::multiprecision::uint256_t TCPClient::getPasswd(boost::multiprecision::uin
                      num3 << *iterator;
                      msg2 += num3.str();
                      num3.str("");
-                     // _sockfd.writeFD(msg2);
-                     // _sockfd.writeFD2(msg2);
-                     // _sockfd.writeFD3(msg2);
-                     // _sockfd.writeFD(*iterator);
-                     // _sockfd.writeFD(", ");
-                     //std::cout << *iterator << ", ";
                      check2 *= *iterator;
                      if (check2 == num2) {
                         msg2 += "\n";
                         _sockfd.writeFD(msg2);
                         std::cout << msg2;
-                        //std::cout << std::endl;
-                        // _status = s_menu;
                         div_found = false;
-                        //check2 = 1;
                         primes = {};
                         primes.resize(0);
                         //std::cout << "Crashing now, don't mind me." << std::endl;
                         msg2 = "";
-                        //handleConnection();
                         num = 0;
                         return 0;
                      }
@@ -622,26 +508,16 @@ boost::multiprecision::uint256_t TCPClient::getPasswd(boost::multiprecision::uin
                      num3 << *iterator;
                      msg2 += num3.str();
                      num3.str("");
-                     // _sockfd.writeFD(msg2);
-                     // _sockfd.writeFD2(msg2);
-                     // _sockfd.writeFD3(msg2);
-                     // _sockfd.writeFD(*iterator);
-                     // _sockfd.writeFD(", ");
-                     //std::cout << *iterator << ", ";
                      check2 *= *iterator;
                      if (check2 == num2) {
                         msg2 += "\n";
                         _sockfd.writeFD(msg2);
                         std::cout << msg2;
-                        //std::cout << std::endl;
-                        // _status = s_menu;
                         div_found = false;
-                        //check2 = 1;
                         primes = {};
                         primes.resize(0);
                         //std::cout << "Crashing now, don't mind me." << std::endl;
                         msg2 = "";
-                        //handleConnection();
                         num = 0;
                         return 0;
                      }
@@ -654,7 +530,9 @@ boost::multiprecision::uint256_t TCPClient::getPasswd(boost::multiprecision::uin
       }
    }
 
-   
+   // Added some hard-coded checks while doing troubleshooting
+
+   /*
    // Now the 5s
    while (newval % 5 == 0) {
       check2 = 1;
@@ -1232,10 +1110,7 @@ boost::multiprecision::uint256_t TCPClient::getPasswd(boost::multiprecision::uin
          }
       }
    }
-
-   //check2 = 1;
-   // std::cout << "Ready for more math!@!!!!" << std::endl;
-   // exit;
+*/
 
    // Now use Pollards Rho to figure out the rest. As it's stochastic, we don't know
    // how long it will take to find an answer. Should return the final two primes

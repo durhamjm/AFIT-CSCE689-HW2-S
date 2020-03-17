@@ -150,12 +150,14 @@ boost::multiprecision::uint256_t TCPConn::getnum() {
 }
 
 /**********************************************************************************************
- * getUsername - called from handleConnection when status is s_username--if it finds user data,
- *               it expects a username and compares it against the password database
+ * getUsername - get the starting number and send it to the client, then get the result
  *
  *    Throws: runtime_error for unrecoverable issues
  **********************************************************************************************/
 
+// Note: while the code still exists on the server for the initial version of the algorithm, the server will not do
+// any calculations on its own. However, should the change be necessary and the server need to assist the nodes in
+// factoring, it can be added in and called after the server passes the number to the client
 boost::multiprecision::uint256_t TCPConn::getUsername(std::string msg3) {
    primes = {};
    primes.resize(0);
@@ -164,6 +166,7 @@ boost::multiprecision::uint256_t TCPConn::getUsername(std::string msg3) {
    std::string buf;
    int rsize;
 
+   // Get starting number
    std::cout << "What is your starting number?" << std::endl;
    boost::multiprecision::uint256_t n;
    std::cin >> n;
@@ -173,6 +176,8 @@ boost::multiprecision::uint256_t TCPConn::getUsername(std::string msg3) {
       n = 1;
       getUsername(msg3);
    }
+
+   // Send number to client
    if (n > 2) {
       msg = n.str();
       msg3 = msg;
@@ -187,72 +192,13 @@ boost::multiprecision::uint256_t TCPConn::getUsername(std::string msg3) {
       // }
       // _connfd = _connfd2;
 
-         //    for (int i = 0; i < primes.size(); i++) {
-         //       if (*iterator >= 1) {
-         //          newval2 = newval2 / *iterator;
-         //          std::cout << "List5 size: " << primes.size() << std::endl;
-         //          std::cout << "List5 at " << i << " : " << *iterator << std::endl;
-         //          std::cout << "newval2 = " << newval2 << std::endl;
-         //       }
-         //       std::advance(iterator, 1);
-
-
-
-      //_status = s_passwd;
-      //_connfd.writeFD("Get to work!\n");
-      // while (!_connfd.hasData2() || !_connfd.hasData() || !_connfd.hasData3()) {
-      //    sleep(1);
-      // }
+         // Get the response from the client
          getUserInput(buf);
          std::cout << buf << std::endl;
-
-      // while (!_connfd.hasData()) {
-      //    return n;
-      // }
-         
-         
-         // if ((rsize = _connfd.readFD(buf)) == -1) {
-         //       throw std::runtime_error("Read on socket failed.");
-         //    } else {
-         //       while ((rsize = _connfd.readFD(buf)) <= 0) {
-         //          sleep(1);
-         //       }
-         //    }
-         // if ((rsize = _connfd.readFD(buf)) > 0) {
-         //    printf("%s", buf.c_str());
-         //    fflush(stdout);
-         // }
       }
    
    return n;
-   //handleConnection();
-   
-   // // Get client IP
-   // std::string IP;
-   // getIPAddrStr(IP);
-   // // std::cout << IP << std::endl;
-  
-   // // Get username
-   // _connfd.writeFD("Username: ");
-   // if (getUserInput(_username) == false) {
-   //    _connfd.writeFD("Error getting username.\n");
-   //    std::cout << "Error getting username.\n";
-   // }
-
-   // Compare username to known users, log if unknown
-   // if (!pmgr.checkUser(_username.c_str())) {
-   //    _connfd.writeFD("Unknown user.\n");
-   //    std::string log = IP + " - Invalid user - " + _username;
-   //    if (!writeLog(log)) {
-   //       std::cout << "Unable to write to log.\n";
-   //    }
-   // When username is good, ask for password
-   // /* } */ else {
-   //    _status = s_menu;
-   //    handleConnection();
-   // }
 }
-
 
 /********************************************************************************************
  * modularPow - function to gradually calculate (x^n)%m to avoid overflow issues for
@@ -513,45 +459,13 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
       return n;
    }
 
-   // std::cout << "Checking if prime: " << n << std::endl;
-
-   // div1 = 0;
-   // bool isprime;
-
-   // // Take care of simple cases
-   // if ((n % 2) == 0) {
-   //    div1 = 2;
-   //    isprime = false;
-   // } else if ((n & 3) == 0) {
-   //    div1 = 3;
-   //    isprime = false;
-   // }
-
-   // // Assumes all primes are to either side of 6k. Using 256 bit to avoid overflow
-   // // issues when calculating max range
-   
-   // int n_256t = n;
-   // for (int k=5; k * k < n_256t; k = k+6) {
-   //    if ((n_256t % k == 0) || (n_256t % (k+2) == 0)) {
-   //       div1 = (int) k;
-   //       isprime = false;
-   //    }
-   // }
-   // isprime = true;
-
-   // if (!isprime) {
-   //    std::cout << n << " is prime. Exiting." << std::endl;
-   //    return 0;
-   // }
-
-
 // First, take care of the '2' factors
    boost::multiprecision::uint256_t newval = n;
    
    while (newval % 2 == 0) {
       check2 = 1;
       primes.push_front(2);
-      std::cout << "Prime Found: 2\n";
+      // std::cout << "Prime Found: 2\n";
       newval = newval / 2;
       iterator = primes.begin();
       for (int i = 0; i < primes.size(); i++) {
@@ -564,7 +478,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
             }
             std::advance(iterator, 1);
             if (check2 == num) {
-               std::cout << "Mission complete!3 Primes are: " << std::endl;
+               // std::cout << "Mission complete!3 Primes are: " << std::endl;
                iterator = primes.begin();
                check2 = 1;
                for (int i = 0; i < primes.size(); i++) {
@@ -577,7 +491,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         div_found = true;
                         num = getUsername(filler);
                         return 0;
-                        std::cout << "Crashing now, don't mind me." << std::endl;
+                        // std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;
                      }
                   }
@@ -593,7 +507,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
    while (newval % 3 == 0) {
       check2 = 1;
       primes.push_front(3);
-      std::cout << "Prime Found: 3\n";
+      // std::cout << "Prime Found: 3\n";
       newval = newval / 3;
       iterator = primes.begin();
       for (int i = 0; i < primes.size(); i++) {
@@ -606,11 +520,11 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
             }
             std::advance(iterator, 1);
             if (check2 == num) {
-               std::cout << "Mission complete!4 Primes are: " << std::endl;
+               // std::cout << "Mission complete!4 Primes are: " << std::endl;
                iterator = primes.begin();
                check2 = 1;
                for (int i = 0; i < primes.size(); i++) {
-                  std::cout << "Test #" << i << std::endl;
+                  // std::cout << "Test #" << i << std::endl;
                   if (*iterator >= 1) {
                      std::cout << *iterator << ", ";
                      check2 *= *iterator;
@@ -620,7 +534,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         div_found = true;
                         num = getUsername(filler);
                         return 0;
-                        std::cout << "Crashing now, don't mind me." << std::endl;
+                        // std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;
                      }
                   }
@@ -636,7 +550,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
    while (newval % 5 == 0) {
       check2 = 1;
       primes.push_front(5);
-      std::cout << "Prime Found: 5\n";
+      // std::cout << "Prime Found: 5\n";
       newval = newval / 5;
       iterator = primes.begin();
       for (int i = 0; i < primes.size(); i++) {
@@ -649,7 +563,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
             }
             std::advance(iterator, 1);
             if (check2 == num) {
-               std::cout << "Mission complete!5 Primes are: " << std::endl;
+               // std::cout << "Mission complete!5 Primes are: " << std::endl;
                iterator = primes.begin();
                check2 = 1;
                for (int i = 0; i < primes.size(); i++) {
@@ -663,7 +577,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
                         div_found = true;
                         num = getUsername(filler);
                         return 0;
-                        std::cout << "Crashing now, don't mind me." << std::endl;
+                        // std::cout << "Crashing now, don't mind me." << std::endl;
                         //return;
                      }
                   }
@@ -683,95 +597,7 @@ boost::multiprecision::uint256_t TCPConn::getPasswd(boost::multiprecision::uint2
       //std::cout << "First check" << std::endl;
       factor(newval);
       }
-
-   
-//    // Get password 
-//    _connfd.writeFD("Password: ");
-//    if (getUserInput(_newpwd) == false) {
-//       std::cout << "Error getting password.\n";
-//    }
-
-//    // Check password limiting to 2 attempts
-//    if (!pmgr.checkPasswd(_username.c_str(),_newpwd.c_str())) {
-//       if (_pwd_attempts == 0) {
-//          _connfd.writeFD("\nIncorrect password. 1 attempt remaining.\n");
-//          _pwd_attempts += 1;
-//       } 
-//       // Log incorrect login attempt and disconect user
-//       else if (_pwd_attempts == 1) {
-//          _connfd.writeFD("\nIncorrect password. Goodbye.\n");
-//          std::string IP;
-//          getIPAddrStr(IP);
-//          std::string log = IP + " - Validation failed - " + _username;
-//          if (!writeLog(log)) {
-//             std::cout << "Unable to write to log.\n";
-//          }
-//          disconnect();
-//       } 
-//    } 
-//    // On success, log authentication and pass user to menu
-//    else {
-//          std::cout << "Successfully authenticated.\n";
-//          _connfd.writeFD("Success!");
-//          std::string IP;
-//          getIPAddrStr(IP);
-//          std::string log = IP + " - Authenticated - " + _username;
-//          if (!writeLog(log)) {
-//             std::cout << "Unable to write to log.\n";
-//          }
-//          sendMenu();
-//          _status = s_menu;
-//          handleConnection();
-//       }
 }
-
-/**********************************************************************************************
- * changePassword - called from handleConnection when status is s_changepwd or s_confirmpwd--
- *                  if it finds user data, with status s_changepwd, it saves the user-entered
- *                  password. If s_confirmpwd, it checks to ensure the saved password from
- *                  the s_changepwd phase is equal, then saves the new pwd to the database
- *
- *    Throws: runtime_error for unrecoverable issues
- **********************************************************************************************/
-
-// void TCPConn::changePassword() {
-//    std::string _newpwd2;
-
-//    // Get password once
-//    _connfd.writeFD("Enter new Password: ");
-//    fflush(stdout);
-//    getUserInput(_newpwd);
-//    clrNewlines(_newpwd); 
-
-//    // Get password second time
-//    _connfd.writeFD("Enter password again: ");
-//    fflush(stdout);
-//    getUserInput(_newpwd2);
-//    clrNewlines(_newpwd2);
-
-//    // If passwords match, change it
-//    if (_newpwd == _newpwd2) {
-//       if (!pmgr.changePasswd(_username.c_str(), _newpwd.c_str())) {
-//       std::cout << "Error changing password.\n";
-//       }
-//    } else {
-//       _connfd.writeFD("Passwords did not match. Returning to menu.\nEnter a command.\n");
-//       _status = s_menu;
-//       return;
-//    }
-   
-//    // Log password changed and send user back to menu
-//    _connfd.writeFD("Password changed successfully!\nEnter a command.\n");
-//    std::string IP;
-//    getIPAddrStr(IP);
-//    std::string log = IP + " - Password changed - " + _username;
-//    if (!writeLog(log)) {
-//       std::cout << "Unable to write to log.\n";
-//    }
-//    _status = s_menu;
-// }
-
-
 /**********************************************************************************************
  * getUserInput - Gets user data and includes a buffer to look for a carriage return before it is
  *                considered a complete user input. Performs some post-processing on it, removing
